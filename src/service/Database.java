@@ -8,31 +8,36 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import model.Admin;
 
 public class Database implements Serializable, Closeable {
 
     /**
      * Main database constants for connection - for ease of access and change
      */
-    public static final String USER_NAME = "root";//change username to your username
-    public static final String PASSWORD = "studevsdb";//change password to your password
-    public static final String URL = "jdbc:mysql://localhost:3306/";
-    public static final String DB_NAME = "BOOKS";
-    public static final String DRIVER = "com.mysql.jdbc.Driver";
+    private static final String USER_NAME = "root";//change username to your username
+    private static final String PASSWORD = "studevsdb";//change password to your password
+    private static final String URL = "jdbc:mysql://localhost:3306/";
+    private static final String DB_NAME = "BOOKS";
+    private static final String DRIVER = "com.mysql.jdbc.Driver";
 
-    private Statement st;
-    private Connection conn = null;
-    private ResultSet rs = null;
+    private Statement statement;
+    private Connection connection = null;
+    private ResultSet resultSet = null;
+    private String sql;
 
     public Database() {
+
         try {
+
             //load mysql driver
             Class.forName(DRIVER);
             //connect to mysql database with username and password
-            conn = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
-            st = conn.createStatement();
+            this.connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
+            this.statement = this.connection.createStatement();
             createDataBase(); // create database
         } catch (ClassNotFoundException ex) {
+
             JOptionPane.showMessageDialog(null, ex); // show error if ar not added to project
             System.exit(0);
         } catch (SQLException ex) { // if database exist
@@ -46,65 +51,105 @@ public class Database implements Serializable, Closeable {
      * create database and tables
      */
     private void createDataBase() {
+
         try {
+
             //if no database named inventor then create it
-            st.execute("CREATE DATABASE IF NOT EXISTS " + DB_NAME + ";");
-            st.execute("USE BOOKS;");
+            this.statement.execute("CREATE DATABASE IF NOT EXISTS " + DB_NAME + " DEFAULT CHARACTER SET utf8");
+            this.statement.execute("USE BOOKS");
+
             //create the tables if not exists (authors, authorISBN and Titles)
-            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.Authors ("
-                    + "authorId INTEGER PRIMARY KEY NOT NULL,"
-                    + "firstName VARCHAR(50) NOT NULL,"
-                    + "lastName VARCHAR(50) NOT NULL);"
-            );
-            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.Titles ("
-                    + "ISBN VARCHAR(50) PRIMARY KEY NOT NULL,"
-                    + "title VARCHAR(50) NOT NULL,"
-                    + "editionNumber INTEGER NOT NULL,"
-                    + "copyright VARCHAR(50) NOT NULL);"
-            );
-            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.AuthorISBN ("
-                    + "authorId INTEGER, "
-                    + "ISBN VARCHAR(50), "
-                    + "FOREIGN KEY (authorId) REFERENCES BOOKS.Authors(authorId), "
-                    + "FOREIGN KEY (ISBN) REFERENCES BOOKS.Titles(ISBN));"
-            );
-            //insert authors
-            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(1,'Paul','Deitel')");
-            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(2,'Harvey','Deitel')");
-            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(3,'Abbey','Deitel')");
-            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(4,'Michael','Morgano')");
-            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(5,'Eric','Kern')");
-            //insert titles
-            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132152134','Visual Basic 2010 How to Program',5,'2011')");
-            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132151421','Visual C# 2010 How to Program',4,'2011')");
-            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132575663','Java How to Program',9,'2012')");
-            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132662361','C++ How to Program',8,'2012')");
-            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132404168','C How to Program',6,'2010')");
-            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('013705842X','iPhone for Programmers: An AppDriven Approach',1,'2010')");
-            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132121360','Android for Programmers: An AppDriven Approach',1,'2012')");
-            //insert authorISBN
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132152134')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132152134')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132151421')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132151421')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132575663')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132575663')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132662361')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132662361')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132404168')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132404168')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'013705842X')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'013705842X')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(3,'013705842X')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(4,'013705842X')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(5,'013705842X')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132121360')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132121360')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(3,'0132121360')");
-            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(4,'0132121360')");
+//            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.Authors ("
+//                    + "authorId INTEGER PRIMARY KEY NOT NULL,"
+//                    + "firstName VARCHAR(50) NOT NULL,"
+//                    + "lastName VARCHAR(50) NOT NULL)"
+//            );
+//
+//            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.Titles ("
+//                    + "ISBN VARCHAR(50) PRIMARY KEY NOT NULL,"
+//                    + "title VARCHAR(50) NOT NULL,"
+//                    + "editionNumber INTEGER NOT NULL,"
+//                    + "copyright VARCHAR(50) NOT NULL)"
+//            );
+//
+//            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.AuthorISBN ("
+//                    + "authorId INTEGER, "
+//                    + "ISBN VARCHAR(50), "
+//                    + "FOREIGN KEY (authorId) REFERENCES BOOKS.Authors(authorId), "
+//                    + "FOREIGN KEY (ISBN) REFERENCES BOOKS.Titles(ISBN))"
+//            );
+            this.statement.execute("CREATE TABLE `BOOKS`.`ADMIN` (\n"
+                    + "  `ID` INT NOT NULL AUTO_INCREMENT,\n"
+                    + "  `USERNAME` VARCHAR(20) NOT NULL,\n"
+                    + "  `PASSWORD` VARCHAR(200) NOT NULL,\n"
+                    + "  `EMAIL` VARCHAR(45) NOT NULL,\n"
+                    + "  `ROLE` VARCHAR(10) NOT NULL,\n"
+                    + "  PRIMARY KEY (`ID`),\n"
+                    + "  UNIQUE INDEX `USERNAME_UNIQUE` (`USERNAME` ASC),\n"
+                    + "  UNIQUE INDEX `EMAIL_UNIQUE` (`EMAIL` ASC))");
+
+//            //insert authors
+//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(1,'Paul','Deitel')");
+//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(2,'Harvey','Deitel')");
+//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(3,'Abbey','Deitel')");
+//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(4,'Michael','Morgano')");
+//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(5,'Eric','Kern')");
+//            //insert titles
+//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132152134','Visual Basic 2010 How to Program',5,'2011')");
+//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132151421','Visual C# 2010 How to Program',4,'2011')");
+//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132575663','Java How to Program',9,'2012')");
+//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132662361','C++ How to Program',8,'2012')");
+//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132404168','C How to Program',6,'2010')");
+//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('013705842X','iPhone for Programmers: An AppDriven Approach',1,'2010')");
+//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132121360','Android for Programmers: An AppDriven Approach',1,'2012')");
+//            //insert authorISBN
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132152134')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132152134')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132151421')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132151421')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132575663')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132575663')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132662361')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132662361')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132404168')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132404168')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'013705842X')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'013705842X')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(3,'013705842X')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(4,'013705842X')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(5,'013705842X')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132121360')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132121360')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(3,'0132121360')");
+//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(4,'0132121360')");
+            //Inserting Master Admin
+            this.statement.execute("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('arif', 'arif123', 'arifshuvo50@gmail.com', 'master')");
+            this.statement.execute("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('ashif', 'ashif123', 'ashif.rahaman@hotmail.com', 'master')");
         } catch (SQLException e) {
             //if insert cause an issue do nothing
+            JOptionPane.showMessageDialog(null, e);
         }
+    }
+
+    public Admin selectAdminFromUsername(String username) {
+
+        Admin admin = null;
+
+        try {
+
+            this.sql = "SELECT * FROM BOOKS.ADMIN WHERE BOOKS.ADMIN.USERNAME = '" + username + "'";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+            if (this.resultSet.next()) {
+
+                admin = new Admin(this.resultSet.getInt(1), this.resultSet.getString(2), this.resultSet.getString(3), this.resultSet.getString(4), this.resultSet.getString(5));
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return admin;
     }
 
     /**
@@ -274,7 +319,7 @@ public class Database implements Serializable, Closeable {
 
         try {
 
-            conn.close();
+            this.connection.close();
         } catch (SQLException e) {
 
             throw new ExceptionInInitializerError(e);

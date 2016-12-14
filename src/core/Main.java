@@ -6,6 +6,7 @@
 package core;
 
 import gui.AdminLoginFrame;
+import service.Database;
 
 /**
  *
@@ -13,16 +14,17 @@ import gui.AdminLoginFrame;
  */
 public class Main {
 
+    private static final Database DATABASE = new Database();
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        
-        AdminLoginFrame alf = new AdminLoginFrame();
+
+        AdminLoginFrame alf = new AdminLoginFrame(DATABASE);
 
         java.awt.EventQueue.invokeLater(() -> {
-            
+
             alf.setVisible(true);
         });
     }

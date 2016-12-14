@@ -5,7 +5,10 @@
  */
 package gui;
 
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
+import model.Admin;
+import service.Database;
 
 /**
  *
@@ -14,12 +17,15 @@ import javax.swing.JOptionPane;
 public class AdminLoginFrame extends javax.swing.JFrame {
 
     private AdminSignupFrame asf;
+    private final Database database;
 
     /**
      * Creates new form AdminLoginFrame
+     *
+     * @param database
      */
-    public AdminLoginFrame() {
-        
+    public AdminLoginFrame(Database database) {
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -30,8 +36,9 @@ public class AdminLoginFrame extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AdminLoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         this.initComponents();
+        this.database = database;
     }
 
     /**
@@ -91,6 +98,11 @@ public class AdminLoginFrame extends javax.swing.JFrame {
         });
 
         bADminLogin.setText("Admin Login");
+        bADminLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bADminLoginActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pMainLayout = new javax.swing.GroupLayout(pMain);
         pMain.setLayout(pMainLayout);
@@ -175,13 +187,13 @@ public class AdminLoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bResetActionPerformed
-        
+
         try {
-            
+
             this.tfUsername.setText(null);
             this.tfPassword.setText(null);
         } catch (Exception e) {
-            
+
             JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_bResetActionPerformed
@@ -189,12 +201,30 @@ public class AdminLoginFrame extends javax.swing.JFrame {
     private void bAdminSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAdminSignupActionPerformed
 
         this.asf = new AdminSignupFrame();
-        
+
         java.awt.EventQueue.invokeLater(() -> {
-        
+
             this.asf.setVisible(true);
         });
     }//GEN-LAST:event_bAdminSignupActionPerformed
+
+    private void bADminLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bADminLoginActionPerformed
+
+        try {
+
+            Admin admin = this.database.selectAdminFromUsername(this.tfUsername.getText().trim());
+            if (admin != null && admin.getPassword().equals(this.tfPassword.getText())) {
+
+                JOptionPane.showMessageDialog(this, "OK");
+                return;
+            }
+
+            JOptionPane.showMessageDialog(this, "NOT OK");
+        } catch (HeadlessException e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_bADminLoginActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
