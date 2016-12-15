@@ -64,6 +64,7 @@ public class AdminLoginFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Login");
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 3, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 204));
@@ -200,7 +201,7 @@ public class AdminLoginFrame extends javax.swing.JFrame {
 
     private void bAdminSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAdminSignupActionPerformed
 
-        this.asf = new AdminSignupFrame();
+        this.asf = new AdminSignupFrame(this.database);
 
         java.awt.EventQueue.invokeLater(() -> {
 

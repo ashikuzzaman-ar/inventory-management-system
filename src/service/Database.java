@@ -55,8 +55,8 @@ public class Database implements Serializable, Closeable {
         try {
 
             //if no database named inventor then create it
-            this.statement.execute("CREATE DATABASE IF NOT EXISTS " + DB_NAME + " DEFAULT CHARACTER SET utf8");
-            this.statement.execute("USE BOOKS");
+            this.statement.execute("CREATE DATABASE IF NOT EXISTS `" + DB_NAME + "` DEFAULT CHARACTER SET utf8");
+            this.statement.execute("USE `BOOKS`");
 
             //create the tables if not exists (authors, authorISBN and Titles)
 //            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.Authors ("
@@ -78,7 +78,7 @@ public class Database implements Serializable, Closeable {
 //                    + "FOREIGN KEY (authorId) REFERENCES BOOKS.Authors(authorId), "
 //                    + "FOREIGN KEY (ISBN) REFERENCES BOOKS.Titles(ISBN))"
 //            );
-            this.statement.execute("CREATE TABLE `BOOKS`.`ADMIN` (\n"
+            if (this.statement.execute("CREATE TABLE IF NOT EXISTS `BOOKS`.`ADMIN` (\n"
                     + "  `ID` INT NOT NULL AUTO_INCREMENT,\n"
                     + "  `USERNAME` VARCHAR(20) NOT NULL,\n"
                     + "  `PASSWORD` VARCHAR(200) NOT NULL,\n"
@@ -86,7 +86,11 @@ public class Database implements Serializable, Closeable {
                     + "  `ROLE` VARCHAR(10) NOT NULL,\n"
                     + "  PRIMARY KEY (`ID`),\n"
                     + "  UNIQUE INDEX `USERNAME_UNIQUE` (`USERNAME` ASC),\n"
-                    + "  UNIQUE INDEX `EMAIL_UNIQUE` (`EMAIL` ASC))");
+                    + "  UNIQUE INDEX `EMAIL_UNIQUE` (`EMAIL` ASC))")) {
+
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('arif', 'arif123', 'arifshuvo50@gmail.com', 'master')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('ashif', 'ashif123', 'ashif.rahaman@hotmail.com', 'master')");
+            }
 
 //            //insert authors
 //            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(1,'Paul','Deitel')");
@@ -122,9 +126,6 @@ public class Database implements Serializable, Closeable {
 //            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132121360')");
 //            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(3,'0132121360')");
 //            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(4,'0132121360')");
-            //Inserting Master Admin
-            this.statement.execute("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('arif', 'arif123', 'arifshuvo50@gmail.com', 'master')");
-            this.statement.execute("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('ashif', 'ashif123', 'ashif.rahaman@hotmail.com', 'master')");
         } catch (SQLException e) {
             //if insert cause an issue do nothing
             JOptionPane.showMessageDialog(null, e);
@@ -137,7 +138,7 @@ public class Database implements Serializable, Closeable {
 
         try {
 
-            this.sql = "SELECT * FROM BOOKS.ADMIN WHERE BOOKS.ADMIN.USERNAME = '" + username + "'";
+            this.sql = "SELECT * FROM `BOOKS`.`ADMIN` WHERE `BOOKS`.`ADMIN`.`USERNAME` = '" + username + "'";
             this.statement = this.connection.createStatement();
             this.resultSet = this.statement.executeQuery(this.sql);
             if (this.resultSet.next()) {
@@ -150,6 +151,50 @@ public class Database implements Serializable, Closeable {
         }
 
         return admin;
+    }
+
+    public Admin selectMasterAdmin() {
+
+        Admin admin = null;
+
+        try {
+
+            this.sql = "SELECT * FROM `BOOKS`.`ADMIN` WHERE `BOOKS`.`ADMIN`.`ROLE` = 'master'";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+            if (this.resultSet.next()) {
+
+                admin = new Admin(this.resultSet.getInt(1), this.resultSet.getString(2), this.resultSet.getString(3), this.resultSet.getString(4), this.resultSet.getString(5));
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return admin;
+    }
+
+    public boolean insertNewAdmin(Admin admin) {
+
+        boolean isInserted = false;
+
+        try {
+
+            this.sql = "INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ("
+                    + "'" + admin.getUsername() + "', "
+                    + "'" + admin.getPassword() + "', "
+                    + "'" + admin.getEmail() + "', "
+                    + "'" + admin.getRole() + "'"
+                    + ")";
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate(this.sql);
+            isInserted = true;
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return isInserted;
     }
 
     /**

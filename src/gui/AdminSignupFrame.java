@@ -1,5 +1,11 @@
 package gui;
 
+import java.awt.Color;
+import java.awt.HeadlessException;
+import javax.swing.JOptionPane;
+import model.Admin;
+import service.Database;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,12 +16,17 @@ package gui;
  * @author ashik
  */
 public class AdminSignupFrame extends javax.swing.JFrame {
+    
+    private final Database database;
+    private Admin admin;
 
     /**
      * Creates new form AdminSignupFrame
+     *
+     * @param database
      */
-    public AdminSignupFrame() {
-
+    public AdminSignupFrame(Database database) {
+        
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -26,8 +37,10 @@ public class AdminSignupFrame extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AdminLoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
+        
         this.initComponents();
+        
+        this.database = database;
     }
 
     /**
@@ -60,6 +73,7 @@ public class AdminSignupFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Admin Signup");
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 3, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 204));
@@ -84,8 +98,18 @@ public class AdminSignupFrame extends javax.swing.JFrame {
         tfMasterPassword.setToolTipText("Master Password");
 
         bReset.setText("Reset");
+        bReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bResetActionPerformed(evt);
+            }
+        });
 
         bSignup.setText("Signup");
+        bSignup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSignupActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Username : ");
 
@@ -206,6 +230,128 @@ public class AdminSignupFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void bResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bResetActionPerformed
+        
+        try {
+            
+            this.balanceColor();
+            
+            this.tfEmail.setText(null);
+            this.tfMasterPassword.setText(null);
+            this.tfMasterUsername.setText(null);
+            this.tfPassword.setText(null);
+            this.tfRetypePassword.setText(null);
+            this.tfUsername.setText(null);
+        } catch (Exception e) {
+            
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_bResetActionPerformed
+
+    private void bSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSignupActionPerformed
+        
+        try {
+            
+            if (this.checkFields()) {
+                
+                this.admin = new Admin(this.tfUsername.getText().trim(), this.tfPassword.getText(), this.tfEmail.getText(), "admin");
+                if (this.database.insertNewAdmin(this.admin)) {
+                    
+                    JOptionPane.showMessageDialog(this, "Success!");
+                    this.dispose();
+                }
+            }
+        } catch (HeadlessException e) {
+            
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_bSignupActionPerformed
+    
+    private boolean checkFields() {
+        
+        boolean isOk = true;
+        
+        this.balanceColor();
+        
+        try {
+            
+            if (this.tfEmail.getText().trim().equals("")) {
+                
+                this.tfEmail.setText(null);
+                this.tfEmail.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfMasterPassword.getText().trim().equals("")) {
+                
+                this.tfMasterPassword.setText(null);
+                this.tfMasterPassword.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfMasterUsername.getText().trim().equals("")) {
+                
+                this.tfMasterUsername.setText(null);
+                this.tfMasterUsername.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfPassword.getText().trim().equals("")) {
+                
+                this.tfPassword.setText(null);
+                this.tfPassword.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfRetypePassword.getText().trim().equals("")) {
+                
+                this.tfRetypePassword.setText(null);
+                this.tfRetypePassword.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfUsername.getText().trim().equals("")) {
+                
+                this.tfUsername.setText(null);
+                this.tfUsername.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (!this.tfPassword.getText().equals(this.tfRetypePassword.getText())) {
+                
+                this.tfPassword.setFocusable(true);
+                this.tfRetypePassword.setFocusable(true);
+                isOk = false;
+                this.lMessage.setText("Password doesn't match! Please try again.");
+            }
+            
+            this.admin = this.database.selectMasterAdmin();
+            
+            if (this.admin == null || !this.admin.getUsername().equals(this.tfMasterUsername.getText()) || !this.admin.getPassword().equals(this.tfMasterPassword.getText())) {
+                
+                this.tfMasterUsername.setFocusable(true);
+                this.tfMasterPassword.setFocusable(true);
+                isOk = false;
+                this.lMessage.setText("Master username and password is not correct! Please try again.");
+            }
+        } catch (Exception e) {
+            
+            JOptionPane.showMessageDialog(this, e);
+        }
+        
+        return isOk;
+    }
+    
+    private void balanceColor() {
+        
+        try {
+            
+            this.tfEmail.setBackground(Color.white);
+            this.tfMasterPassword.setBackground(Color.white);
+            this.tfMasterUsername.setBackground(Color.white);
+            this.tfPassword.setBackground(Color.white);
+            this.tfRetypePassword.setBackground(Color.white);
+            this.tfUsername.setBackground(Color.white);
+        } catch (Exception e) {
+            
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
