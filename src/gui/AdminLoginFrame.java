@@ -5,6 +5,7 @@
  */
 package gui;
 
+import java.awt.Color;
 import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 import model.Admin;
@@ -18,6 +19,7 @@ public class AdminLoginFrame extends javax.swing.JFrame {
 
     private AdminSignupFrame asf;
     private final Database database;
+    private HomeFrame homeFrame;
 
     /**
      * Creates new form AdminLoginFrame
@@ -216,11 +218,17 @@ public class AdminLoginFrame extends javax.swing.JFrame {
             Admin admin = this.database.selectAdminFromUsername(this.tfUsername.getText().trim());
             if (admin != null && admin.getPassword().equals(this.tfPassword.getText())) {
 
-                JOptionPane.showMessageDialog(this, "OK");
-                return;
+                this.homeFrame = new HomeFrame();
+                java.awt.EventQueue.invokeLater(() -> {
+
+                    this.homeFrame.setVisible(true);
+                });
+
+                this.dispose();
             }
 
-            JOptionPane.showMessageDialog(this, "NOT OK");
+            this.lMessage.setText("Username and Password is not correct! Please try again.");
+            this.lMessage.setForeground(Color.red);
         } catch (HeadlessException e) {
 
             JOptionPane.showMessageDialog(this, e);

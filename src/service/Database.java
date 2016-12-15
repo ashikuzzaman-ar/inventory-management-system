@@ -78,18 +78,22 @@ public class Database implements Serializable, Closeable {
 //                    + "FOREIGN KEY (authorId) REFERENCES BOOKS.Authors(authorId), "
 //                    + "FOREIGN KEY (ISBN) REFERENCES BOOKS.Titles(ISBN))"
 //            );
-            if (this.statement.execute("CREATE TABLE IF NOT EXISTS `BOOKS`.`ADMIN` (\n"
-                    + "  `ID` INT NOT NULL AUTO_INCREMENT,\n"
-                    + "  `USERNAME` VARCHAR(20) NOT NULL,\n"
-                    + "  `PASSWORD` VARCHAR(200) NOT NULL,\n"
-                    + "  `EMAIL` VARCHAR(45) NOT NULL,\n"
-                    + "  `ROLE` VARCHAR(10) NOT NULL,\n"
-                    + "  PRIMARY KEY (`ID`),\n"
-                    + "  UNIQUE INDEX `USERNAME_UNIQUE` (`USERNAME` ASC),\n"
-                    + "  UNIQUE INDEX `EMAIL_UNIQUE` (`EMAIL` ASC))")) {
+            try {
 
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('arif', 'arif123', 'arifshuvo50@gmail.com', 'master')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('ashif', 'ashif123', 'ashif.rahaman@hotmail.com', 'master')");
+                this.statement.execute("CREATE TABLE `BOOKS`.`ADMIN` (\n"
+                        + "  `ID` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "  `USERNAME` VARCHAR(20) NOT NULL,\n"
+                        + "  `PASSWORD` VARCHAR(200) NOT NULL,\n"
+                        + "  `EMAIL` VARCHAR(45) NOT NULL,\n"
+                        + "  `ROLE` VARCHAR(10) NOT NULL,\n"
+                        + "  PRIMARY KEY (`ID`),\n"
+                        + "  UNIQUE INDEX `USERNAME_UNIQUE` (`USERNAME` ASC),\n"
+                        + "  UNIQUE INDEX `EMAIL_UNIQUE` (`EMAIL` ASC))");
+
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('ashik', 'ashik123', 'ashikuzzaman.ar@gmail.com', 'master')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('arif', 'arif123', 'arifshuvo50@gmail.com', 'admin')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('ashif', 'ashif123', 'ashif.rahaman@hotmail.com', 'admin')");
+            } catch (SQLException e) {
             }
 
 //            //insert authors
