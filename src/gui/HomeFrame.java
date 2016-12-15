@@ -46,7 +46,7 @@ public class HomeFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         pHomePanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lvlTitle = new javax.swing.JLabel();
         bAddBook = new javax.swing.JButton();
         bDelete = new javax.swing.JButton();
         bUpdate = new javax.swing.JButton();
@@ -56,7 +56,7 @@ public class HomeFrame extends javax.swing.JFrame {
         bReturn = new javax.swing.JButton();
         pBookListPanel = new javax.swing.JScrollPane();
         tblMainBookList = new javax.swing.JTable();
-        jPanel1 = new javax.swing.JPanel();
+        pBookStatusPanel = new javax.swing.JPanel();
         lvlBookStatusTitle = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBookInfoTable = new javax.swing.JTable();
@@ -68,10 +68,10 @@ public class HomeFrame extends javax.swing.JFrame {
         setTitle("Home - Inventory Management System");
         setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 204));
-        jLabel1.setText("Inventory Management System");
-        jLabel1.setToolTipText("");
+        lvlTitle.setFont(new java.awt.Font("DejaVu Sans", 1, 24)); // NOI18N
+        lvlTitle.setForeground(new java.awt.Color(0, 0, 204));
+        lvlTitle.setText("Inventory Management System");
+        lvlTitle.setToolTipText("");
 
         bAddBook.setText("Add Book");
         bAddBook.setToolTipText("Add Book");
@@ -135,14 +135,14 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addGap(71, 71, 71))
             .addGroup(pHomePanelLayout.createSequentialGroup()
                 .addGap(180, 180, 180)
-                .addComponent(jLabel1)
+                .addComponent(lvlTitle)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pHomePanelLayout.setVerticalGroup(
             pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pHomePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(lvlTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bAddBook, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -190,7 +190,7 @@ public class HomeFrame extends javax.swing.JFrame {
             tblMainBookList.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pBookStatusPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         lvlBookStatusTitle.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
         lvlBookStatusTitle.setText("Book Title will be here");
@@ -253,30 +253,30 @@ public class HomeFrame extends javax.swing.JFrame {
         lvlBorrowTitle.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
         lvlBorrowTitle.setText("Borrower List");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout pBookStatusPanelLayout = new javax.swing.GroupLayout(pBookStatusPanel);
+        pBookStatusPanel.setLayout(pBookStatusPanelLayout);
+        pBookStatusPanelLayout.setHorizontalGroup(
+            pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pBookStatusPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
                         .addComponent(lvlBookStatusTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(57, 57, 57))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                         .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addContainerGap())))
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(pBookStatusPanelLayout.createSequentialGroup()
                 .addGap(142, 142, 142)
                 .addComponent(lvlBorrowTitle)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        pBookStatusPanelLayout.setVerticalGroup(
+            pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pBookStatusPanelLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addComponent(lvlBookStatusTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -299,7 +299,7 @@ public class HomeFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pBookListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(pBookStatusPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -309,7 +309,7 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addComponent(pHomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pBookStatusPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pBookListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -341,13 +341,13 @@ public class HomeFrame extends javax.swing.JFrame {
     private javax.swing.JButton bReturn;
     private javax.swing.JButton bSearch;
     private javax.swing.JButton bUpdate;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lvlBookStatusTitle;
     private javax.swing.JLabel lvlBorrowTitle;
+    private javax.swing.JLabel lvlTitle;
     private javax.swing.JScrollPane pBookListPanel;
+    private javax.swing.JPanel pBookStatusPanel;
     private javax.swing.JPanel pHomePanel;
     private javax.swing.JTable tblBookBorrowerTable;
     private javax.swing.JTable tblBookInfoTable;
