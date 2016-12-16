@@ -41,7 +41,7 @@ public class PursueFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         lvlBookTitle = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        tfStudentID = new javax.swing.JTextField();
         bCheckAvailable = new javax.swing.JButton();
         pStudentInfoPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -63,9 +63,9 @@ public class PursueFrame extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
         jLabel2.setText("Student ID: ");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        tfStudentID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                tfStudentIDActionPerformed(evt);
             }
         });
 
@@ -209,7 +209,7 @@ public class PursueFrame extends javax.swing.JFrame {
                                 .addGap(28, 28, 28)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(tfStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(bCheckAvailable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -228,7 +228,7 @@ public class PursueFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tfStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2))
                     .addComponent(bCheckAvailable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -262,9 +262,9 @@ public class PursueFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void tfStudentIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfStudentIDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_tfStudentIDActionPerformed
 
     private void bCancelPursueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelPursueActionPerformed
         // TODO add your handling code here:
@@ -283,11 +283,11 @@ public class PursueFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lvlBookTitle;
     private javax.swing.JPanel pBorrowedBooksPanel;
     private javax.swing.JPanel pStudentInfoPanel;
     private javax.swing.JTable tblBorrowedBooks;
     private javax.swing.JTable tblstudentInfo;
+    private javax.swing.JTextField tfStudentID;
     // End of variables declaration//GEN-END:variables
 }
