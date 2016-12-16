@@ -48,12 +48,13 @@ public class HomeFrame extends javax.swing.JFrame {
         pHomePanel = new javax.swing.JPanel();
         lvlTitle = new javax.swing.JLabel();
         bAddBook = new javax.swing.JButton();
-        bDelete = new javax.swing.JButton();
+        bAuthorList = new javax.swing.JButton();
         bUpdate = new javax.swing.JButton();
         bPursue = new javax.swing.JButton();
         tfSearch = new javax.swing.JTextField();
         bSearch = new javax.swing.JButton();
         bReturn = new javax.swing.JButton();
+        bDelete = new javax.swing.JButton();
         pBookListPanel = new javax.swing.JScrollPane();
         tblMainBookList = new javax.swing.JTable();
         pBookStatusPanel = new javax.swing.JPanel();
@@ -81,8 +82,8 @@ public class HomeFrame extends javax.swing.JFrame {
             }
         });
 
-        bDelete.setText("Delete");
-        bDelete.setToolTipText("Delete Selected Book");
+        bAuthorList.setText("Author List");
+        bAuthorList.setToolTipText("Delete Selected Book");
 
         bUpdate.setText("Update");
         bUpdate.setToolTipText("Update Selected Book Info");
@@ -110,25 +111,19 @@ public class HomeFrame extends javax.swing.JFrame {
             }
         });
 
+        bDelete.setText("Delete");
+        bDelete.setToolTipText("Delete Selected Book");
+
         javax.swing.GroupLayout pHomePanelLayout = new javax.swing.GroupLayout(pHomePanel);
         pHomePanel.setLayout(pHomePanelLayout);
         pHomePanelLayout.setHorizontalGroup(
             pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pHomePanelLayout.createSequentialGroup()
                 .addGap(206, 206, 206)
-                .addGroup(pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pHomePanelLayout.createSequentialGroup()
-                        .addComponent(bAddBook, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(bDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(bUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(pHomePanelLayout.createSequentialGroup()
-                        .addComponent(tfSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(bSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(212, 212, 212)))
+                .addComponent(tfSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(212, 212, 212)
                 .addGroup(pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(bReturn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bPursue, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
@@ -137,6 +132,16 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addGap(180, 180, 180)
                 .addComponent(lvlTitle)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pHomePanelLayout.createSequentialGroup()
+                .addGap(157, 157, 157)
+                .addComponent(bAddBook, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(bAuthorList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(31, 31, 31)
+                .addComponent(bDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(bUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(247, 247, 247))
         );
         pHomePanelLayout.setVerticalGroup(
             pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -146,9 +151,10 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bAddBook, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bAuthorList, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -336,6 +342,7 @@ public class HomeFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddBook;
+    private javax.swing.JButton bAuthorList;
     private javax.swing.JButton bDelete;
     private javax.swing.JButton bPursue;
     private javax.swing.JButton bReturn;
