@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import model.Admin;
 
@@ -58,26 +59,132 @@ public class Database implements Serializable, Closeable {
             this.statement.execute("CREATE DATABASE IF NOT EXISTS `" + DB_NAME + "` DEFAULT CHARACTER SET utf8");
             this.statement.execute("USE `BOOKS`");
 
-            //create the tables if not exists (authors, authorISBN and Titles)
-//            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.Authors ("
-//                    + "authorId INTEGER PRIMARY KEY NOT NULL,"
-//                    + "firstName VARCHAR(50) NOT NULL,"
-//                    + "lastName VARCHAR(50) NOT NULL)"
-//            );
-//
-//            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.Titles ("
-//                    + "ISBN VARCHAR(50) PRIMARY KEY NOT NULL,"
-//                    + "title VARCHAR(50) NOT NULL,"
-//                    + "editionNumber INTEGER NOT NULL,"
-//                    + "copyright VARCHAR(50) NOT NULL)"
-//            );
-//
-//            st.execute("CREATE TABLE IF NOT EXISTS BOOKS.AuthorISBN ("
-//                    + "authorId INTEGER, "
-//                    + "ISBN VARCHAR(50), "
-//                    + "FOREIGN KEY (authorId) REFERENCES BOOKS.Authors(authorId), "
-//                    + "FOREIGN KEY (ISBN) REFERENCES BOOKS.Titles(ISBN))"
-//            );
+            //create the tables if not exists (authors, authorISBN, Borrower, BorrowerISBN and Titles)
+            try {
+
+                this.statement.execute("CREATE TABLE `BOOKS`.`Authors` ("
+                        + "`authorId` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,"
+                        + "`firstName` VARCHAR(50) NOT NULL,"
+                        + "`lastName` VARCHAR(50) NOT NULL)"
+                );
+
+                //insert authors
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Authors` (`firstName`, `lastName`) VALUES('Paul','Deitel')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Authors` (`firstName`, `lastName`) VALUES('Harvey','Deitel')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Authors` (`firstName`, `lastName`) VALUES('Abbey','Deitel')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Authors` (`firstName`, `lastName`) VALUES('Michael','Morgano')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Authors` (`firstName`, `lastName`) VALUES('Eric','Kern')");
+            } catch (SQLException e) {
+            }
+
+            //TODO: Edit here
+            try {
+
+                this.statement.execute("CREATE TABLE `BOOKS`.`Borrowers` ("
+                        + "`id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,"
+                        + "`firstName` VARCHAR(50) NOT NULL,"
+                        + "`lastName` VARCHAR(50) NOT NULL,"
+                        + "`phoneNumber` VARCHAR(50) NOT NULL)"
+                );
+
+                //insert authors
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Borrowers` (`firstName`, `lastName`, `phoneNumber`) VALUES('Paul','Deitel','+8801766750645')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Borrowers` (`firstName`, `lastName`, `phoneNumber`) VALUES('Harvey','Deitel','+8801766750645')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Borrowers` (`firstName`, `lastName`, `phoneNumber`) VALUES('Abbey','Deitel','+8801766750645')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Borrowers` (`firstName`, `lastName`, `phoneNumber`) VALUES('Michael','Morgano','+8801766750645')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Borrowers` (`firstName`, `lastName`, `phoneNumber`) VALUES('Eric','Kern','+8801766750645')");
+            } catch (SQLException e) {
+            }
+
+            try {
+
+                this.statement.execute("CREATE TABLE `BOOKS`.`Titles` ("
+                        + "`ISBN` VARCHAR(50) PRIMARY KEY NOT NULL,"
+                        + "`title` VARCHAR(50) NOT NULL,"
+                        + "`editionNumber` INTEGER NOT NULL,"
+                        + "`totalNumber` INTEGER NOT NULL,"
+                        + "`copyright` VARCHAR(50) NOT NULL)"
+                );
+
+                //insert titles
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Titles` (`ISBN`, `title`, `editionNumber`, `totalNumber`, `copyright`) VALUES('0132152134','Visual Basic 2010 How to Program',5,5,'2011')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Titles` (`ISBN`, `title`, `editionNumber`, `totalNumber`, `copyright`) VALUES('0132151421','Visual C# 2010 How to Program',4,4,'2011')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Titles` (`ISBN`, `title`, `editionNumber`, `totalNumber`, `copyright`) VALUES('0132575663','Java How to Program',9,9,'2012')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Titles` (`ISBN`, `title`, `editionNumber`, `totalNumber`, `copyright`) VALUES('0132662361','C++ How to Program',8,8,'2012')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Titles` (`ISBN`, `title`, `editionNumber`, `totalNumber`, `copyright`) VALUES('0132404168','C How to Program',6,6,'2010')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Titles` (`ISBN`, `title`, `editionNumber`, `totalNumber`, `copyright`) VALUES('013705842X','iPhone for Programmers: An AppDriven Approach',1,1,'2010')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`Titles` (`ISBN`, `title`, `editionNumber`, `totalNumber`, `copyright`) VALUES('0132121360','Android for Programmers: An AppDriven Approach',1,1,'2012')");
+            } catch (SQLException e) {
+            }
+
+            try {
+
+                this.statement.execute("CREATE TABLE `BOOKS`.`AuthorISBN` ("
+                        + "`authorId` INTEGER, "
+                        + "`ISBN` VARCHAR(50), "
+                        + "FOREIGN KEY (`authorId`) REFERENCES `BOOKS`.`Authors`(`authorId`), "
+                        + "FOREIGN KEY (`ISBN`) REFERENCES `BOOKS`.`Titles`(`ISBN`))"
+                );
+
+                //insert authorISBN
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(1,'0132152134')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(2,'0132152134')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(1,'0132151421')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(2,'0132151421')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(1,'0132575663')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(2,'0132575663')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(1,'0132662361')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(2,'0132662361')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(1,'0132404168')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(2,'0132404168')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(1,'013705842X')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(2,'013705842X')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(3,'013705842X')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(4,'013705842X')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(5,'013705842X')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(1,'0132121360')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(2,'0132121360')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(3,'0132121360')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(4,'0132121360')");
+            } catch (SQLException e) {
+            }
+
+            try {
+
+                this.statement.execute("CREATE TABLE `BOOKS`.`BorrowerISBN` ("
+                        + "`borrowerId` INTEGER, "
+                        + "`ISBN` VARCHAR(50), "
+                        + "`pursueDate` VARCHAR(50), "
+                        + "`returnDate` VARCHAR(50), "
+                        + "FOREIGN KEY (`borrowerId`) REFERENCES `BOOKS`.`Borrowers`(`id`), "
+                        + "FOREIGN KEY (`ISBN`) REFERENCES `BOOKS`.`Titles`(`ISBN`))"
+                );
+
+                //insert authorISBN
+                Date date = new Date();
+
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132152134', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132152134', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132151421', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132151421', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132575663', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132575663', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132662361', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132662361', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132404168', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132404168', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(3,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(4,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(5,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132121360', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132121360', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(3,'0132121360', '" + date.toString() + "', '" + date.toString() + "')");
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(4,'0132121360', '" + date.toString() + "', '" + date.toString() + "')");
+            } catch (SQLException e) {
+            }
+
             try {
 
                 this.statement.execute("CREATE TABLE `BOOKS`.`ADMIN` (\n"
@@ -96,40 +203,6 @@ public class Database implements Serializable, Closeable {
             } catch (SQLException e) {
             }
 
-//            //insert authors
-//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(1,'Paul','Deitel')");
-//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(2,'Harvey','Deitel')");
-//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(3,'Abbey','Deitel')");
-//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(4,'Michael','Morgano')");
-//            st.executeUpdate("INSERT INTO BOOKS.Authors VALUES(5,'Eric','Kern')");
-//            //insert titles
-//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132152134','Visual Basic 2010 How to Program',5,'2011')");
-//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132151421','Visual C# 2010 How to Program',4,'2011')");
-//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132575663','Java How to Program',9,'2012')");
-//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132662361','C++ How to Program',8,'2012')");
-//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132404168','C How to Program',6,'2010')");
-//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('013705842X','iPhone for Programmers: An AppDriven Approach',1,'2010')");
-//            st.executeUpdate("INSERT INTO BOOKS.Titles VALUES('0132121360','Android for Programmers: An AppDriven Approach',1,'2012')");
-//            //insert authorISBN
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132152134')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132152134')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132151421')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132151421')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132575663')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132575663')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132662361')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132662361')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132404168')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132404168')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'013705842X')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'013705842X')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(3,'013705842X')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(4,'013705842X')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(5,'013705842X')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(1,'0132121360')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(2,'0132121360')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(3,'0132121360')");
-//            st.executeUpdate("INSERT INTO BOOKS.AuthorISBN VALUES(4,'0132121360')");
         } catch (SQLException e) {
             //if insert cause an issue do nothing
             JOptionPane.showMessageDialog(null, e);

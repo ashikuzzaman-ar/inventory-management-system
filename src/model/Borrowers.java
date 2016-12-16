@@ -11,23 +11,23 @@ import java.util.Objects;
  *
  * @author ashik
  */
-public class Borrower {
+public class Borrowers {
 
     private int id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
 
-    public Borrower() {
+    public Borrowers() {
     }
 
-    public Borrower(String firstName, String lastName, String phoneNumber) {
+    public Borrowers(String firstName, String lastName, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
     }
 
-    public Borrower(int id, String firstName, String lastName, String phoneNumber) {
+    public Borrowers(int id, String firstName, String lastName, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -71,7 +71,7 @@ public class Borrower {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Borrower other = (Borrower) obj;
+        final Borrowers other = (Borrowers) obj;
         if (this.id != other.id) {
             return false;
         }
