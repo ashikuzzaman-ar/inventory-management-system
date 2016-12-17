@@ -5,22 +5,49 @@
  */
 package gui;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Author;
+import model.AuthorISBN;
+import model.BorrowerISBN;
+import model.Borrowers;
+import model.Title;
+import service.Database;
+
 /**
  *
  * @author ashik
  */
 public class HomeFrame extends javax.swing.JFrame {
 
+    private final Database database;
+    private Map<String, Title> titles;
+    private Map<String, Author> authors;
+    private Map<String, Borrowers> borrowers;
+    private List<BorrowerISBN> borrowerISBNs;
+    private Map<String, List<String>> authorTitleMap;
+    private Map<String, List<String>> titleAuthorMap;
+    private Map<String, List<String>> titleBorrowersMap;
+
+    private final DefaultTableModel defaultTableModelMainBookList;
+    private final DefaultTableModel defaultTableModelBookInfoTable;
+    private final DefaultTableModel defaultTableModelBookBorrowerTable;
+
     /**
      * Creates new form HomeFrame
      */
-    
     /**
-     * TODO: Ashif, design this frame completely and attractively how I shown you.
+     * TODO: Ashif, design this frame completely and attractively how I shown
+     * you.
+     *
+     * @param database
      */
-    
-    public HomeFrame() {
-        
+    public HomeFrame(Database database) {
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -32,8 +59,174 @@ public class HomeFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AdminLoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        
         this.initComponents();
+        this.defaultTableModelMainBookList = (DefaultTableModel) this.tblMainBookList.getModel();
+        this.defaultTableModelBookInfoTable = (DefaultTableModel) this.tblBookInfoTable.getModel();
+        this.defaultTableModelBookBorrowerTable = (DefaultTableModel) this.tblBookBorrowerTable.getModel();
+        this.database = database;
+        this.initializeDatabase();
+        this.initizalizeMainBookListTable();
+    }
+
+    private void initializeDatabase() {
+
+        try {
+
+            this.titles = this.database.selectTitles();
+            this.authors = this.database.selectAuthors();
+            this.borrowers = this.database.selectBorrowers();
+            this.initializeAuthorTitleMap(this.database.selectAuthorISBN());
+            this.borrowerISBNs = this.database.selectBorrowerISBN();
+            this.initializeBorrowersTitleMap();
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void initializeBorrowersTitleMap() {
+
+        try {
+
+            if (this.titleBorrowersMap == null) {
+
+                this.titleBorrowersMap = new HashMap<>();
+            }
+
+            this.borrowerISBNs.stream().forEach(borrowersISBN -> {
+
+                if (this.titleBorrowersMap.containsKey(borrowersISBN.getISBN())) {
+
+                    this.titleBorrowersMap.get(borrowersISBN.getISBN()).add(String.valueOf(borrowersISBN.getBorrowerId()));
+                } else {
+
+                    List<String> borrowerses = new ArrayList<>();
+                    borrowerses.add(String.valueOf(borrowersISBN.getBorrowerId()));
+                    this.titleBorrowersMap.put(borrowersISBN.getISBN(), borrowerses);
+                }
+            });
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void initializeAuthorTitleMap(List<AuthorISBN> authorISBNs) {
+
+        try {
+
+            if (this.authorTitleMap == null) {
+
+                this.authorTitleMap = new HashMap<>();
+            }
+            if (this.titleAuthorMap == null) {
+
+                this.titleAuthorMap = new HashMap<>();
+            }
+
+            authorISBNs.stream().forEach(authorISBN -> {
+
+                if (this.authorTitleMap.containsKey(authorISBN.getAuthorId())) {
+
+                    this.authorTitleMap.get(authorISBN.getAuthorId()).add(authorISBN.getISBN());
+                } else {
+
+                    List<String> isbnList = new ArrayList<>();
+                    isbnList.add(authorISBN.getISBN());
+                    this.authorTitleMap.put(String.valueOf(authorISBN.getAuthorId()), isbnList);
+                }
+
+                if (this.titleAuthorMap.containsKey(authorISBN.getISBN())) {
+
+                    this.titleAuthorMap.get(authorISBN.getISBN()).add(String.valueOf(authorISBN.getAuthorId()));
+                } else {
+
+                    List<String> idList = new ArrayList<>();
+                    idList.add(String.valueOf(authorISBN.getAuthorId()));
+                    this.titleAuthorMap.put(authorISBN.getISBN(), idList);
+                }
+            });
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void clearBookBorrowerTable() {
+
+        try {
+
+            for (int i = this.defaultTableModelBookBorrowerTable.getRowCount() - 1; i >= 0; i--) {
+
+                this.defaultTableModelBookBorrowerTable.removeRow(i);
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void clearBookInfoTable() {
+
+        try {
+
+            for (int i = this.defaultTableModelBookInfoTable.getRowCount() - 1; i >= 0; i--) {
+
+                this.defaultTableModelBookInfoTable.removeRow(i);
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void clearMainBookListTable() {
+
+        try {
+
+            for (int i = this.defaultTableModelMainBookList.getRowCount() - 1; i >= 0; i--) {
+
+                this.defaultTableModelMainBookList.removeRow(i);
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void initizalizeMainBookListTable() {
+
+        try {
+
+            this.clearMainBookListTable();
+            if (this.titles != null && this.titles.size() > 0) {
+
+                this.titles.entrySet().stream().forEach(t -> {
+
+                    Title title = t.getValue();
+                    StringBuilder authorList = new StringBuilder();
+                    List<String> tempAuthorList = this.titleAuthorMap.get(title.getISBN());
+
+                    tempAuthorList.stream().forEach(al -> {
+
+                        authorList.append(this.authors.get(al).getFirstName());
+                        authorList.append(" ");
+                        authorList.append(this.authors.get(al).getLastName());
+                        authorList.append(",");
+                    });
+
+                    this.defaultTableModelMainBookList.addRow(new Object[]{
+                        title.getTitle(),
+                        authorList.toString(),
+                        title.getISBN(),
+                        title.getTotalNumber(),
+                        title.getTotalNumber() - this.titleBorrowersMap.get(title.getISBN()).size()
+                    });
+                });
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
     }
 
     /**
@@ -165,21 +358,17 @@ public class HomeFrame extends javax.swing.JFrame {
 
         tblMainBookList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title", "Author", "Total Copy", "Available"
+                "Title", "Author", "ISBN", "Total Copy", "Available"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -190,21 +379,20 @@ public class HomeFrame extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblMainBookList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblMainBookListMouseClicked(evt);
+            }
+        });
         pBookListPanel.setViewportView(tblMainBookList);
-        if (tblMainBookList.getColumnModel().getColumnCount() > 0) {
-            tblMainBookList.getColumnModel().getColumn(2).setResizable(false);
-            tblMainBookList.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         pBookStatusPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        lvlBookStatusTitle.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
-        lvlBookStatusTitle.setText("Book Title will be here");
+        lvlBookStatusTitle.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
 
         tblBookInfoTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "ISBN", "Edition"
@@ -219,17 +407,10 @@ public class HomeFrame extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(tblBookInfoTable);
-        if (tblBookInfoTable.getColumnModel().getColumnCount() > 0) {
-            tblBookInfoTable.getColumnModel().getColumn(0).setResizable(false);
-            tblBookInfoTable.getColumnModel().getColumn(1).setResizable(false);
-        }
 
         tblBookBorrowerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Name", "Phone", "Pursue", "Return"
@@ -264,21 +445,22 @@ public class HomeFrame extends javax.swing.JFrame {
         pBookStatusPanelLayout.setHorizontalGroup(
             pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pBookStatusPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
-                        .addComponent(lvlBookStatusTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(57, 57, 57))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addContainerGap())))
-            .addGroup(pBookStatusPanelLayout.createSequentialGroup()
                 .addGap(142, 142, 142)
                 .addComponent(lvlBorrowTitle)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 118, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                            .addContainerGap())
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addContainerGap()))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
+                        .addComponent(lvlBookStatusTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14))))
         );
         pBookStatusPanelLayout.setVerticalGroup(
             pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -338,6 +520,44 @@ public class HomeFrame extends javax.swing.JFrame {
     private void bReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bReturnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bReturnActionPerformed
+
+    private void tblMainBookListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMainBookListMouseClicked
+
+        try {
+
+            this.clearBookInfoTable();
+            this.clearBookBorrowerTable();
+
+            int index = this.tblMainBookList.getSelectedRow();
+
+            if (index >= 0) {
+
+                String ISBN = (String) this.defaultTableModelMainBookList.getValueAt(index, 2);
+
+                this.lvlBookStatusTitle.setText(this.titles.get(ISBN).getTitle());
+
+                this.defaultTableModelBookInfoTable.addRow(new Object[]{
+                    ISBN,
+                    this.titles.get(ISBN).getEditionNumber()
+                });
+
+                this.titleBorrowersMap.get(ISBN).stream().forEach(b -> {
+
+                    Borrowers borrower = this.borrowers.get(b);
+                    BorrowerISBN borrowerISBN = this.borrowerISBNs.get(this.borrowerISBNs.indexOf(new BorrowerISBN(borrower.getId(), ISBN)));
+                    this.defaultTableModelBookBorrowerTable.addRow(new Object[]{
+                        borrower.getFirstName() + " " + borrower.getLastName(),
+                        borrower.getPhoneNumber(),
+                        borrowerISBN.getPursueDate(),
+                        borrowerISBN.getReturnDate()
+                    });
+                });
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_tblMainBookListMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

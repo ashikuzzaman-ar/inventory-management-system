@@ -7,9 +7,18 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import model.Admin;
+import model.Author;
+import model.AuthorISBN;
+import model.BorrowerISBN;
+import model.Borrowers;
+import model.Title;
 
 public class Database implements Serializable, Closeable {
 
@@ -272,6 +281,144 @@ public class Database implements Serializable, Closeable {
         }
 
         return isInserted;
+    }
+
+    public Map<String, Title> selectTitles() {
+
+        Map<String, Title> titles = null;
+
+        try {
+
+            this.sql = "SELECT * FROM `BOOKS`.`Titles`";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+
+            while (this.resultSet.next()) {
+
+                if (titles == null) {
+
+                    titles = new HashMap<>();
+                }
+
+                Title title = new Title(this.resultSet.getString(1), this.resultSet.getString(2), this.resultSet.getInt(3), this.resultSet.getString(5), this.resultSet.getInt(4));
+                titles.put(title.getISBN(), title);
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return titles;
+    }
+
+    public Map<String, Author> selectAuthors() {
+
+        Map<String, Author> authors = null;
+
+        try {
+
+            this.sql = "SELECT * FROM `BOOKS`.`Authors`";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+
+            while (this.resultSet.next()) {
+
+                if (authors == null) {
+
+                    authors = new HashMap<>();
+                }
+
+                Author author = new Author(this.resultSet.getInt(1), this.resultSet.getString(2), this.resultSet.getString(3));
+                authors.put(String.valueOf(author.getAuthorId()), author);
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return authors;
+    }
+
+    public Map<String, Borrowers> selectBorrowers() {
+
+        Map<String, Borrowers> borrowersMap = null;
+
+        try {
+
+            this.sql = "SELECT * FROM `BOOKS`.`Borrowers`";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+
+            while (this.resultSet.next()) {
+
+                if (borrowersMap == null) {
+
+                    borrowersMap = new HashMap<>();
+                }
+
+                Borrowers borrowers = new Borrowers(this.resultSet.getInt(1), this.resultSet.getString(2), this.resultSet.getString(3), this.resultSet.getString(4));
+                borrowersMap.put(String.valueOf(borrowers.getId()), borrowers);
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return borrowersMap;
+    }
+
+    public List<AuthorISBN> selectAuthorISBN() {
+
+        List<AuthorISBN> authorISBNs = null;
+
+        try {
+
+            this.sql = "SELECT * FROM `BOOKS`.`AuthorISBN`";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+
+            while (this.resultSet.next()) {
+
+                if (authorISBNs == null) {
+
+                    authorISBNs = new ArrayList<>();
+                }
+
+                authorISBNs.add(new AuthorISBN(this.resultSet.getInt(1), this.resultSet.getString(2)));
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return authorISBNs;
+    }
+
+    public List<BorrowerISBN> selectBorrowerISBN() {
+
+        List<BorrowerISBN> borrowerISBNs = null;
+
+        try {
+
+            this.sql = "SELECT * FROM `BOOKS`.`BorrowerISBN`";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+
+            while (this.resultSet.next()) {
+
+                if (borrowerISBNs == null) {
+
+                    borrowerISBNs = new ArrayList<>();
+                }
+
+                borrowerISBNs.add(new BorrowerISBN(this.resultSet.getInt(1), this.resultSet.getString(2), this.resultSet.getString(3), this.resultSet.getString(4)));
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return borrowerISBNs;
     }
 
     /**

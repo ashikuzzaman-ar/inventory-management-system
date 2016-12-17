@@ -5,7 +5,6 @@
  */
 package model;
 
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -13,16 +12,21 @@ import java.util.Objects;
  * @author ashik
  */
 public class BorrowerISBN {
-    
-    private int borrowerId ;
-    private String ISBN ;
-    private Date pursueDate ;
-    private Date returnDate ;
+
+    private int borrowerId;
+    private String ISBN;
+    private String pursueDate;
+    private String returnDate;
 
     public BorrowerISBN() {
     }
 
-    public BorrowerISBN(int borrowerId, String ISBN, Date pursueDate, Date returnDate) {
+    public BorrowerISBN(int borrowerId, String ISBN) {
+        this.borrowerId = borrowerId;
+        this.ISBN = ISBN;
+    }
+
+    public BorrowerISBN(int borrowerId, String ISBN, String pursueDate, String returnDate) {
         this.borrowerId = borrowerId;
         this.ISBN = ISBN;
         this.pursueDate = pursueDate;
@@ -37,11 +41,11 @@ public class BorrowerISBN {
         return ISBN;
     }
 
-    public Date getPursueDate() {
+    public String getPursueDate() {
         return pursueDate;
     }
 
-    public Date getReturnDate() {
+    public String getReturnDate() {
         return returnDate;
     }
 
@@ -70,12 +74,6 @@ public class BorrowerISBN {
         if (this.borrowerId != other.borrowerId) {
             return false;
         }
-        if (!Objects.equals(this.ISBN, other.ISBN)) {
-            return false;
-        }
-        if (!Objects.equals(this.pursueDate, other.pursueDate)) {
-            return false;
-        }
-        return Objects.equals(this.returnDate, other.returnDate);
+        return Objects.equals(this.ISBN, other.ISBN);
     }
 }

@@ -218,7 +218,7 @@ public class AdminLoginFrame extends javax.swing.JFrame {
             Admin admin = this.database.selectAdminFromUsername(this.tfUsername.getText().trim());
             if (admin != null && admin.getPassword().equals(this.tfPassword.getText())) {
 
-                this.homeFrame = new HomeFrame();
+                this.homeFrame = new HomeFrame(this.database);
                 java.awt.EventQueue.invokeLater(() -> {
 
                     this.homeFrame.setVisible(true);
