@@ -285,6 +285,35 @@ public class Database implements Serializable, Closeable {
         return isInserted;
     }
 
+    public boolean deleteTitle(String ISBN) {
+
+        boolean isOk = false;
+
+        try {
+
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate("DELETE FROM `BOOKS`.`BorrowerISBN` WHERE "
+                    + "`ISBN` = '" + ISBN + "'");
+            this.statement.executeUpdate("DELETE FROM `BOOKS`.`AuthorISBN` "
+                    + "WHERE `ISBN` = '" + ISBN + "'");
+            this.statement.executeUpdate("DELETE FROM `BOOKS`.`Titles` "
+                    + "WHERE `ISBN`='" + ISBN + "'");
+
+            isOk = true;
+
+            if (isOk) {
+                JOptionPane.showMessageDialog(null, "Successfully deleted the entry.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed operation.");
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return isOk;
+    }
+
     public boolean insertTitle(Title title) {
 
         boolean isInserted = false;

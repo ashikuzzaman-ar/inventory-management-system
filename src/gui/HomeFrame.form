@@ -141,6 +141,9 @@
             <Property name="text" type="java.lang.String" value="Author List"/>
             <Property name="toolTipText" type="java.lang.String" value="Delete Selected Book"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bAuthorListActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="bUpdate">
           <Properties>
@@ -181,6 +184,9 @@
             <Property name="text" type="java.lang.String" value="Delete"/>
             <Property name="toolTipText" type="java.lang.String" value="Delete Selected Book"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bDeleteActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
