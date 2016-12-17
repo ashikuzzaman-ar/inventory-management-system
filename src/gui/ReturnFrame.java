@@ -5,16 +5,45 @@
  */
 package gui;
 
+import java.awt.HeadlessException;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.BorrowerISBN;
+import model.Borrowers;
+import model.Title;
+import service.Database;
+
 /**
  *
  * @author ashif
  */
 public class ReturnFrame extends javax.swing.JFrame {
 
+    private final Database database;
+//    private final String ISBN;
+    private final Map<String, Title> titles;
+    private final Map<String, Borrowers> borrowers;
+    private final List<BorrowerISBN> borrowerISBNs;
+    private final Map<String, List<String>> titleBorrowersMap;
+    private final DefaultTableModel defaultTableModelStudentInfo;
+    private final DefaultTableModel defaultTableModelReturnBooks;
+    private String borrowerId;
+
     /**
      * Creates new form PersueFrame
+     *
+     * @param database
+     * @param titles
+     * @param borrowers
+     * @param borrowerISBNs
+     * @param titleBorrowersMap
      */
-    public ReturnFrame() {
+    public ReturnFrame(Database database, Map<String, Title> titles,
+            Map<String, Borrowers> borrowers, List<BorrowerISBN> borrowerISBNs,
+            Map<String, List<String>> titleBorrowersMap) {
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -25,8 +54,49 @@ public class ReturnFrame extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AdminLoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
-        initComponents();
+
+        this.initComponents();
+        this.hidingInformationPanel(true);
+        this.database = database;
+//        this.ISBN = ISBN;
+        this.titles = titles;
+        this.borrowers = borrowers;
+        this.borrowerISBNs = borrowerISBNs;
+        this.titleBorrowersMap = titleBorrowersMap;
+
+        this.defaultTableModelStudentInfo = (DefaultTableModel) this.tblStudentInfo.getModel();
+        this.defaultTableModelReturnBooks = (DefaultTableModel) this.tblReturnBooks.getModel();
+    }
+
+    private void hidingInformationPanel(boolean hide) {
+
+        try {
+
+            this.pReturnBooksPanel.setVisible(!hide);
+            this.pStudentInfoPanel.setVisible(!hide);
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void clearTables() {
+
+        try {
+
+            for (int i = this.defaultTableModelStudentInfo.getRowCount() - 1; i >= 0; i--) {
+
+                this.defaultTableModelStudentInfo.removeRow(i);
+            }
+
+            for (int i = this.defaultTableModelReturnBooks.getRowCount() - 1; i >= 0; i--) {
+
+                this.defaultTableModelReturnBooks.removeRow(i);
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
     }
 
     /**
@@ -39,13 +109,12 @@ public class ReturnFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        lvlBookTitle = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         tfStudentID = new javax.swing.JTextField();
         bCheckAvailable = new javax.swing.JButton();
         pStudentInfoPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblstudentInfo = new javax.swing.JTable();
+        tblStudentInfo = new javax.swing.JTable();
         pReturnBooksPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -56,9 +125,6 @@ public class ReturnFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Pursue");
         setResizable(false);
-
-        lvlBookTitle.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
-        lvlBookTitle.setText("Book Name will be here");
 
         jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
         jLabel2.setText("Student ID: ");
@@ -76,9 +142,9 @@ public class ReturnFrame extends javax.swing.JFrame {
             }
         });
 
-        tblstudentInfo.setModel(new javax.swing.table.DefaultTableModel(
+        tblStudentInfo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null}
+
             },
             new String [] {
                 "Name", "Department"
@@ -99,11 +165,7 @@ public class ReturnFrame extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblstudentInfo);
-        if (tblstudentInfo.getColumnModel().getColumnCount() > 0) {
-            tblstudentInfo.getColumnModel().getColumn(0).setResizable(false);
-            tblstudentInfo.getColumnModel().getColumn(1).setResizable(false);
-        }
+        jScrollPane1.setViewportView(tblStudentInfo);
 
         javax.swing.GroupLayout pStudentInfoPanelLayout = new javax.swing.GroupLayout(pStudentInfoPanel);
         pStudentInfoPanel.setLayout(pStudentInfoPanelLayout);
@@ -127,10 +189,7 @@ public class ReturnFrame extends javax.swing.JFrame {
 
         tblReturnBooks.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title", "ISBN", "Pursue", "Return"
@@ -152,12 +211,6 @@ public class ReturnFrame extends javax.swing.JFrame {
             }
         });
         jScrollPane3.setViewportView(tblReturnBooks);
-        if (tblReturnBooks.getColumnModel().getColumnCount() > 0) {
-            tblReturnBooks.getColumnModel().getColumn(0).setResizable(false);
-            tblReturnBooks.getColumnModel().getColumn(1).setResizable(false);
-            tblReturnBooks.getColumnModel().getColumn(2).setResizable(false);
-            tblReturnBooks.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         javax.swing.GroupLayout pReturnBooksPanelLayout = new javax.swing.GroupLayout(pReturnBooksPanel);
         pReturnBooksPanel.setLayout(pReturnBooksPanelLayout);
@@ -211,31 +264,27 @@ public class ReturnFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(101, 101, 101)
-                                .addComponent(lvlBookTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(bCheckAvailable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(bCheckAvailable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addContainerGap()
                         .addComponent(bCancelReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(73, 73, 73)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bFinalizeReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bCancelReturn, bFinalizeReturn});
+
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lvlBookTitle)
-                .addGap(18, 18, 18)
+                .addGap(46, 46, 46)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(tfStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -245,12 +294,13 @@ public class ReturnFrame extends javax.swing.JFrame {
                 .addComponent(pStudentInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pReturnBooksPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bFinalizeReturn, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
-                    .addComponent(bCancelReturn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bFinalizeReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bCancelReturn)))
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bCancelReturn, bFinalizeReturn});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -277,20 +327,85 @@ public class ReturnFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tfStudentIDActionPerformed
 
     private void bCancelReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelReturnActionPerformed
-        // TODO: Ashik vai, write manupulation code to Cancle the return action here
+
+        this.dispose();
     }//GEN-LAST:event_bCancelReturnActionPerformed
 
     private void bFinalizeReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFinalizeReturnActionPerformed
-        // TODO: Ashik vai, write manupulation code to finalize the return action here
+
+        try {
+
+            if (this.borrowerId == null || !this.borrowers.containsKey(borrowerId)) {
+
+                JOptionPane.showMessageDialog(this, "Invalid ID detected!");
+            } else {
+
+                int index = this.tblReturnBooks.getSelectedRow();
+
+                if (index >= 0) {
+
+                    BorrowerISBN borrowerISBN = new BorrowerISBN(Integer.parseInt(this.borrowerId), (String) this.defaultTableModelReturnBooks.getValueAt(index, 1));
+
+                    if (this.database.deleteBorrowerISBN(borrowerISBN)) {
+
+                        this.borrowerISBNs.remove(borrowerISBN);
+                        this.titleBorrowersMap.get(borrowerISBN.getISBN()).remove(this.borrowerId);
+                        JOptionPane.showMessageDialog(this, "Successfully Returned!");
+                        this.bCheckAvailableActionPerformed(evt);
+                    }
+                } else {
+
+                    JOptionPane.showMessageDialog(this, "Please select a book first then try again.");
+                }
+            }
+        } catch (HeadlessException e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
     }//GEN-LAST:event_bFinalizeReturnActionPerformed
 
     private void bCheckAvailableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCheckAvailableActionPerformed
-        // TODO: Ashik vai, write code to find the availability of a student reading ID from textfield
+
+        try {
+
+            this.borrowerId = this.tfStudentID.getText();
+
+            this.clearTables();
+
+            if (this.borrowers.containsKey(borrowerId)) {
+
+                Borrowers borrower = this.borrowers.get(borrowerId);
+
+                this.defaultTableModelStudentInfo.addRow(new Object[]{
+                    borrower.getFirstName() + " " + borrower.getLastName(),
+                    borrower.getPhoneNumber()
+                });
+
+                this.borrowerISBNs.stream().forEach(b -> {
+
+                    if (b.getBorrowerId() == Integer.parseInt(borrowerId)) {
+
+                        this.defaultTableModelReturnBooks.addRow(new Object[]{
+                            this.titles.get(b.getISBN()).getTitle(),
+                            b.getISBN(),
+                            b.getPursueDate(),
+                            b.getReturnDate()
+                        });
+                    }
+                });
+
+                this.hidingInformationPanel(false);
+            } else {
+
+                this.hidingInformationPanel(true);
+                JOptionPane.showMessageDialog(this, "Invalid borrower ID. Please try again.");
+            }
+        } catch (HeadlessException e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
     }//GEN-LAST:event_bCheckAvailableActionPerformed
 
-    
-    
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCancelReturn;
@@ -301,11 +416,10 @@ public class ReturnFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JLabel lvlBookTitle;
     private javax.swing.JPanel pReturnBooksPanel;
     private javax.swing.JPanel pStudentInfoPanel;
     private javax.swing.JTable tblReturnBooks;
-    private javax.swing.JTable tblstudentInfo;
+    private javax.swing.JTable tblStudentInfo;
     private javax.swing.JTextField tfStudentID;
     // End of variables declaration//GEN-END:variables
 }

@@ -56,7 +56,7 @@ public class PursueFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AdminLoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        initComponents();
+        this.initComponents();
         this.hidingInformationPanel(true);
         this.database = database;
         this.ISBN = ISBN;

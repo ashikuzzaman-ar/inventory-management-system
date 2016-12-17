@@ -38,6 +38,7 @@ public class HomeFrame extends javax.swing.JFrame {
     private final DefaultTableModel defaultTableModelBookInfoTable;
     private final DefaultTableModel defaultTableModelBookBorrowerTable;
     private PursueFrame pursueFrame;
+    private ReturnFrame returnFrame;
 
     /**
      * Creates new form HomeFrame
@@ -541,7 +542,19 @@ public class HomeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_bSearchActionPerformed
 
     private void bReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bReturnActionPerformed
-        // TODO add your handling code here:
+
+        try {
+
+            java.awt.EventQueue.invokeLater(() -> {
+
+                returnFrame = new ReturnFrame(database, this.titles,
+                        borrowers, borrowerISBNs, titleBorrowersMap);
+                returnFrame.setVisible(true);
+            });
+        } catch (HeadlessException e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
     }//GEN-LAST:event_bReturnActionPerformed
 
     private void tblMainBookListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMainBookListMouseClicked

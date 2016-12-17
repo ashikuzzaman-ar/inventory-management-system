@@ -431,6 +431,7 @@ public class Database implements Serializable, Closeable {
                     + "WHERE `BOOKS`.`BorrowerISBN`.`borrowerId` = " + borrowerISBN.getBorrowerId() + " AND `BOOKS`.`BorrowerISBN`.`ISBN` = '" + borrowerISBN.getISBN() + "'";
             this.statement = this.connection.createStatement();
             this.resultSet = this.statement.executeQuery(this.sql);
+
             if (this.resultSet.next()) {
 
                 JOptionPane.showMessageDialog(null, "This book is already registered by this borrower.");
@@ -440,6 +441,37 @@ public class Database implements Serializable, Closeable {
                         + "VALUES(" + borrowerISBN.getBorrowerId() + ",'" + borrowerISBN.getISBN() + "', '" + borrowerISBN.getPursueDate() + "', '" + borrowerISBN.getReturnDate() + "')");
 
                 isOk = true;
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return isOk;
+    }
+
+    public boolean deleteBorrowerISBN(BorrowerISBN borrowerISBN) {
+
+        boolean isOk = false;
+
+        try {
+
+            this.sql = "SELECT * FROM `BOOKS`.`BorrowerISBN` \n"
+                    + "WHERE `BOOKS`.`BorrowerISBN`.`borrowerId` = " + borrowerISBN.getBorrowerId() + " AND `BOOKS`.`BorrowerISBN`.`ISBN` = '" + borrowerISBN.getISBN() + "'";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+
+            if (this.resultSet.next()) {
+
+                this.sql = "DELETE FROM `BOOKS`.`BorrowerISBN` \n"
+                        + "WHERE `BOOKS`.`BorrowerISBN`.`borrowerId` = " + borrowerISBN.getBorrowerId() + " AND `BOOKS`.`BorrowerISBN`.`ISBN` = '" + borrowerISBN.getISBN() + "'";
+
+                this.statement.execute(this.sql);
+
+                isOk = true;
+            } else {
+
+                JOptionPane.showMessageDialog(null, "This book is not a valid operation.");
             }
         } catch (SQLException e) {
 
