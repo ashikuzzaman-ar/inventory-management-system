@@ -5,16 +5,41 @@
  */
 package gui;
 
+import java.awt.Color;
+import java.awt.HeadlessException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import model.Author;
+import model.Title;
+import service.Database;
+
 /**
  *
  * @author ashif
  */
 public class AddBookFrame extends javax.swing.JFrame {
 
+    private final Database database;
+    private final Map<String, Title> titles;
+    private final Map<String, Author> authors;
+    private final Map<String, List<String>> authorTitleMap;
+    private final Map<String, List<String>> titleAuthorMap;
+    private final List<String> authorIds;
+
     /**
      * Creates new form UpdateFrame
+     *
+     * @param database
+     * @param authors
+     * @param titles
+     * @param authorTitleMap
+     * @param titleAuthorMap
      */
-    public AddBookFrame() {
+    public AddBookFrame(Database database, Map<String, Author> authors,
+            Map<String, Title> titles, Map<String, List<String>> authorTitleMap,
+            Map<String, List<String>> titleAuthorMap) {
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -27,7 +52,79 @@ public class AddBookFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AdminLoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        initComponents();
+        this.initComponents();
+        this.database = database;
+        this.authors = authors;
+        this.titles = titles;
+        this.authorTitleMap = authorTitleMap;
+        this.titleAuthorMap = titleAuthorMap;
+        this.authorIds = new ArrayList<>();
+        this.initializeAuthorList();
+    }
+
+    private void initializeAuthorList() {
+
+        try {
+
+            this.ddAuthor.removeAllItems();
+            this.authors.entrySet().stream().forEach(a -> {
+
+                this.ddAuthor.addItem(a.getValue().getFirstName() + " " + a.getValue().getLastName() + "::" + a.getValue().getAuthorId());
+            });
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private boolean checkFields() {
+
+        boolean isOk = true;
+
+        try {
+
+            if (this.tfBookTitle.getText().trim().equals("")) {
+
+                this.tfBookTitle.setText(null);
+                this.tfBookTitle.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfEdition.getText().trim().equals("")) {
+
+                this.tfEdition.setText(null);
+                this.tfEdition.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfISBN.getText().trim().equals("")) {
+
+                this.tfISBN.setText(null);
+                this.tfISBN.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfTotalCopy.getText().trim().equals("")) {
+
+                this.tfTotalCopy.setText(null);
+                this.tfTotalCopy.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.tfCopyRight.getText().trim().equals("")) {
+
+                this.tfCopyRight.setText(null);
+                this.tfCopyRight.setBackground(Color.yellow);
+                isOk = false;
+            }
+            if (this.taAuthors.getText().trim().equals("")) {
+
+                this.taAuthors.setText(null);
+                this.taAuthors.setBackground(Color.yellow);
+                isOk = false;
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+
+        return isOk;
     }
 
     /**
@@ -45,18 +142,20 @@ public class AddBookFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         tfBookTitle = new javax.swing.JTextField();
         tfEdition = new javax.swing.JTextField();
         tfISBN = new javax.swing.JTextField();
-        tfTotalCopy = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         taAuthors = new javax.swing.JTextArea();
         ddAuthor = new javax.swing.JComboBox<>();
         bAddAuthorDropDown = new javax.swing.JButton();
-        bAddBook = new javax.swing.JButton();
-        bReset = new javax.swing.JButton();
+        tfCopyRight = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        tfTotalCopy = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         bCancle = new javax.swing.JButton();
+        bReset = new javax.swing.JButton();
+        bAddBook = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -76,9 +175,6 @@ public class AddBookFrame extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
         jLabel5.setText("Edition:");
 
-        jLabel6.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
-        jLabel6.setText("Total Copy:");
-
         tfBookTitle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfBookTitleActionPerformed(evt);
@@ -97,12 +193,7 @@ public class AddBookFrame extends javax.swing.JFrame {
             }
         });
 
-        tfTotalCopy.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfTotalCopyActionPerformed(evt);
-            }
-        });
-
+        taAuthors.setEditable(false);
         taAuthors.setColumns(20);
         taAuthors.setRows(5);
         jScrollPane1.setViewportView(taAuthors);
@@ -110,69 +201,69 @@ public class AddBookFrame extends javax.swing.JFrame {
         ddAuthor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         bAddAuthorDropDown.setText("<  Add");
-
-        bAddBook.setText("Add");
-
-        bReset.setText("Reset");
-        bReset.addActionListener(new java.awt.event.ActionListener() {
+        bAddAuthorDropDown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bResetActionPerformed(evt);
+                bAddAuthorDropDownActionPerformed(evt);
             }
         });
 
-        bCancle.setText("Cancel");
-        bCancle.addActionListener(new java.awt.event.ActionListener() {
+        jLabel7.setText("Copy Right:");
+
+        tfTotalCopy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bCancleActionPerformed(evt);
+                tfTotalCopyActionPerformed(evt);
             }
         });
+
+        jLabel6.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
+        jLabel6.setText("Total Copy:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bCancle, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
-                        .addComponent(bReset, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(bAddBook, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel4)
+                        .addGap(20, 20, 20)
+                        .addComponent(tfISBN))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tfBookTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel6)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tfTotalCopy))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ddAuthor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(bAddAuthorDropDown, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel7))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(32, 32, 32)
+                                .addGap(14, 14, 14)
                                 .addComponent(tfEdition))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(20, 20, 20)
-                                .addComponent(tfISBN))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(tfBookTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(ddAuthor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(bAddAuthorDropDown, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(tfCopyRight, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(13, 13, 13))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(169, 169, 169))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tfTotalCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,7 +287,7 @@ public class AddBookFrame extends javax.swing.JFrame {
                                 .addComponent(ddAuthor, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(bAddAuthorDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 38, Short.MAX_VALUE)))
+                                .addGap(0, 12, Short.MAX_VALUE)))
                         .addGap(18, 18, 18)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -205,27 +296,64 @@ public class AddBookFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(tfEdition, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfCopyRight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(tfTotalCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(bAddBook, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
-                    .addComponent(bReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bCancle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(20, 20, 20))
+                .addGap(29, 29, 29))
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {tfCopyRight, tfEdition});
+
+        bCancle.setText("Cancel");
+        bCancle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCancleActionPerformed(evt);
+            }
+        });
+
+        bReset.setText("Reset");
+        bReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bResetActionPerformed(evt);
+            }
+        });
+
+        bAddBook.setText("Add");
+        bAddBook.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAddBookActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bCancle, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(bReset, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(bAddBook, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(bAddBook, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bCancle, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -248,14 +376,112 @@ public class AddBookFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tfTotalCopyActionPerformed
 
     private void bResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bResetActionPerformed
-        // TODO add your handling code here:
+
+        try {
+
+            this.tfBookTitle.setText(null);
+            this.tfEdition.setText(null);
+            this.tfISBN.setText(null);
+            this.tfTotalCopy.setText(null);
+            this.tfCopyRight.setText(null);
+            this.taAuthors.setText(null);
+
+            this.tfBookTitle.setBackground(Color.white);
+            this.tfEdition.setBackground(Color.white);
+            this.tfISBN.setBackground(Color.white);
+            this.tfTotalCopy.setBackground(Color.white);
+            this.tfCopyRight.setBackground(Color.white);
+            this.taAuthors.setBackground(Color.white);
+
+//            this.authorIds.clear();
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
     }//GEN-LAST:event_bResetActionPerformed
 
     private void bCancleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancleActionPerformed
-        // TODO add your handling code here:
+
+        this.dispose();
     }//GEN-LAST:event_bCancleActionPerformed
 
-    
+    private void bAddAuthorDropDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddAuthorDropDownActionPerformed
+
+        try {
+
+            StringBuilder stringBuilder = new StringBuilder(this.taAuthors.getText());
+            if (stringBuilder.toString().trim().equals("")) {
+
+                stringBuilder.append(this.ddAuthor.getSelectedItem().toString().split("::")[0]);
+            } else {
+
+                stringBuilder.append("\n");
+                stringBuilder.append(this.ddAuthor.getSelectedItem().toString().split("::")[0]);
+            }
+            this.taAuthors.setText(stringBuilder.toString());
+
+            this.authorIds.add(this.ddAuthor.getSelectedItem().toString().split("::")[1]);
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_bAddAuthorDropDownActionPerformed
+
+    private void bAddBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddBookActionPerformed
+
+        try {
+
+            if (this.checkFields()) {
+
+                String ISBN = tfISBN.getText();
+                String bookTitle = tfBookTitle.getText();
+                int edition = Integer.parseInt(tfEdition.getText());
+                String copyRight = tfCopyRight.getText();
+                int totalCopy = Integer.parseInt(tfTotalCopy.getText());
+
+                Title title = new Title(ISBN, bookTitle, edition, copyRight, totalCopy);
+
+                if (this.database.insertTitle(title) && this.database.insertAuthorISBN(this.authorIds, ISBN)) {
+
+                    this.titles.put(title.getISBN(), title);
+
+                    this.authorIds.stream().forEach(id -> {
+
+                        if (this.authorTitleMap.containsKey(id)) {
+
+                            this.authorTitleMap.get(id).add(ISBN);
+                        } else {
+
+                            List<String> isbnList = new ArrayList<>();
+                            isbnList.add(ISBN);
+                            this.authorTitleMap.put(String.valueOf(id), isbnList);
+                        }
+
+                        if (this.titleAuthorMap.containsKey(ISBN)) {
+
+                            this.titleAuthorMap.get(ISBN).add(String.valueOf(id));
+                        } else {
+
+                            List<String> idList = new ArrayList<>();
+                            idList.add(String.valueOf(id));
+                            this.titleAuthorMap.put(ISBN, idList);
+                        }
+                    });
+
+                    JOptionPane.showMessageDialog(this, "Successfully added a new book!");
+                    this.authorIds.clear();
+                    this.bResetActionPerformed(evt);
+                }
+            } else {
+
+                JOptionPane.showMessageDialog(this, "Please completely insert all field.");
+            }
+        } catch (HeadlessException e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_bAddBookActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddAuthorDropDown;
@@ -269,10 +495,12 @@ public class AddBookFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea taAuthors;
     private javax.swing.JTextField tfBookTitle;
+    private javax.swing.JTextField tfCopyRight;
     private javax.swing.JTextField tfEdition;
     private javax.swing.JTextField tfISBN;
     private javax.swing.JTextField tfTotalCopy;

@@ -86,7 +86,6 @@ public class Database implements Serializable, Closeable {
             } catch (SQLException e) {
             }
 
-            //TODO: Edit here
             try {
 
                 this.statement.execute("CREATE TABLE `BOOKS`.`Borrowers` ("
@@ -96,7 +95,7 @@ public class Database implements Serializable, Closeable {
                         + "`phoneNumber` VARCHAR(50) NOT NULL)"
                 );
 
-                //insert authors
+                //insert borrowers
                 this.statement.executeUpdate("INSERT INTO `BOOKS`.`Borrowers` (`firstName`, `lastName`, `phoneNumber`) VALUES('Paul','Deitel','+8801766750645')");
                 this.statement.executeUpdate("INSERT INTO `BOOKS`.`Borrowers` (`firstName`, `lastName`, `phoneNumber`) VALUES('Harvey','Deitel','+8801766750645')");
                 this.statement.executeUpdate("INSERT INTO `BOOKS`.`Borrowers` (`firstName`, `lastName`, `phoneNumber`) VALUES('Abbey','Deitel','+8801766750645')");
@@ -169,7 +168,7 @@ public class Database implements Serializable, Closeable {
                         + "FOREIGN KEY (`ISBN`) REFERENCES `BOOKS`.`Titles`(`ISBN`))"
                 );
 
-                //insert authorISBN
+                //insert borrowersISBN
                 Date date = new Date();
 
                 this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132152134', '" + date.toString() + "', '" + date.toString() + "')");
@@ -258,6 +257,57 @@ public class Database implements Serializable, Closeable {
         }
 
         return admin;
+    }
+
+    public boolean insertAuthorISBN(List<String> authorIDs, String ISBN) {
+
+        boolean isInserted = false;
+
+        try {
+
+            this.statement = this.connection.createStatement();
+
+            authorIDs.stream().forEach(id -> {
+
+                try {
+                    this.statement.executeUpdate("INSERT INTO `BOOKS`.`AuthorISBN` (`authorId`, `ISBN`) VALUES(" + id + ",'" + ISBN + "')");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, ex);
+                }
+            });
+
+            isInserted = true;
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return isInserted;
+    }
+
+    public boolean insertTitle(Title title) {
+
+        boolean isInserted = false;
+
+        try {
+
+            this.sql = "INSERT INTO `BOOKS`.`Titles` "
+                    + "(`ISBN`, `title`, `editionNumber`, `totalNumber`, `copyright`) "
+                    + "VALUES('" + title.getISBN() + "',"
+                    + "'" + title.getTitle() + "',"
+                    + title.getEditionNumber() + ","
+                    + title.getTotalNumber() + ","
+                    + "'" + title.getCopyRight() + "'"
+                    + ")";
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate(this.sql);
+            isInserted = true;
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return isInserted;
     }
 
     public boolean insertNewAdmin(Admin admin) {
