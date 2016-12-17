@@ -1,3 +1,6 @@
+/**
+ * This class is responsible for manipulating database
+ */
 package service;
 
 import java.io.Closeable;
@@ -8,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,29 +169,6 @@ public class Database implements Serializable, Closeable {
                         + "FOREIGN KEY (`borrowerId`) REFERENCES `BOOKS`.`Borrowers`(`id`), "
                         + "FOREIGN KEY (`ISBN`) REFERENCES `BOOKS`.`Titles`(`ISBN`))"
                 );
-
-                //insert borrowersISBN
-                Date date = new Date();
-
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132152134', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132152134', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132151421', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132151421', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132575663', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132575663', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132662361', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132662361', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132404168', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132404168', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(3,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(4,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(5,'013705842X', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(1,'0132121360', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(2,'0132121360', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(3,'0132121360', '" + date.toString() + "', '" + date.toString() + "')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) VALUES(4,'0132121360', '" + date.toString() + "', '" + date.toString() + "')");
             } catch (SQLException e) {
             }
 
@@ -206,8 +185,6 @@ public class Database implements Serializable, Closeable {
                         + "  UNIQUE INDEX `EMAIL_UNIQUE` (`EMAIL` ASC))");
 
                 this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('ashik', 'ashik123', 'ashikuzzaman.ar@gmail.com', 'master')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('arif', 'arif123', 'arifshuvo50@gmail.com', 'admin')");
-                this.statement.executeUpdate("INSERT INTO `BOOKS`.`ADMIN` (`USERNAME`, `PASSWORD`, `EMAIL`, `ROLE`) VALUES ('ashif', 'ashif123', 'ashif.rahaman@hotmail.com', 'admin')");
             } catch (SQLException e) {
             }
 
@@ -358,6 +335,25 @@ public class Database implements Serializable, Closeable {
         }
 
         return isInserted;
+    }
+
+    public boolean insertNewAuthor(Author author) {
+
+        boolean isOk = false;
+
+        try {
+
+            author.setAuthorId(this.statement.executeUpdate("INSERT INTO `BOOKS`.`Authors` "
+                    + "(`firstName`, `lastName`) "
+                    + "VALUES('" + author.getFirstName() + "',"
+                    + "'" + author.getLastName() + "')"));
+            isOk = true;
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return isOk;
     }
 
     public boolean insertNewAdmin(Admin admin) {
@@ -581,163 +577,6 @@ public class Database implements Serializable, Closeable {
         return isOk;
     }
 
-    /**
-     * Select all authors from database
-     *
-     * @return ArrayList<Author>
-     */
-//    public List<Author> selectAllAuthors() {
-//        try {
-//            String query = "SELECT * FROM BOOKS.Authors";
-//            List<Author> authors = new ArrayList<>();
-//            st = conn.createStatement(); // create statement
-//            rs = st.executeQuery(query); // execute query
-//            //read authors
-//            while (rs.next()) {
-//                int authorID = rs.getInt(1);
-//                String firstName = rs.getString(2);
-//                String lastName = rs.getString(3);
-//                Author author = new Author(authorID, firstName, lastName);
-//                authors.add(author); // add to arralist
-//            }
-//            return authors;
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-    /**
-     * Select a specific author and list all books for that author. Include each
-     * book’s title, year, and ISBN. Order the information chronologically.
-     *
-     * @param authorId Author
-     * @return List<Title>
-     */
-//    public List<Title> selectTitlesForAuthor(int authorId) {
-//        try {
-//            String query = "SELECT * FROM BOOKS.Titles"
-//                    + " INNER JOIN AuthorISBN"
-//                    + " ON Titles.ISBN = AuthorISBN.ISBN"
-//                    + " Where AuthorISBN.authorId = " + authorId
-//                    + " Order By Titles.copyright;";
-//            List<Title> titles = new ArrayList<>();
-//            st = conn.createStatement(); // create statement
-//            rs = st.executeQuery(query); // execute query
-//            //read authors
-//            while (rs.next()) {
-//                String ISBN = rs.getString(1);
-//                String title = rs.getString(2);
-//                int edition = rs.getInt(3);
-//                String copyright = rs.getString(4);
-//                Title titleObj = new Title(ISBN, title, edition, copyright);
-//                titles.add(titleObj); // add to arralist
-//            }
-//            return titles;
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-    /**
-     * Select a specific title and list all authors for that title. Order the
-     * authors alphabetically by last name and then by first name
-     *
-     * @param title String
-     * @return List<Author>
-     */
-//    public List<Author> selectAuthorsForTitle(String title) {
-//        try {
-//            String query = "SELECT DISTINCT Authors.authorId, Authors.firstName, Authors.lastName"
-//                    + " FROM Authors, Titles, AuthorISBN"
-//                    + " WHERE ("
-//                    + " (Titles.ISBN = AuthorISBN.ISBN and AuthorISBN.authorId = Authors.authorId)"
-//                    + " AND"
-//                    + " Titles.title LIKE '%" + title + "%'"
-//                    + ")"
-//                    + " ORDER BY Authors.lastName, Authors.firstName" + ";";
-//            List<Author> authors = new ArrayList<>();
-//            st = conn.createStatement(); // create statement
-//            rs = st.executeQuery(query); // execute query
-//            //read authors
-//            while (rs.next()) {
-//                int authorID = rs.getInt(1);
-//                String firstName = rs.getString(2);
-//                String lastName = rs.getString(3);
-//                Author author = new Author(authorID, firstName, lastName);
-//                authors.add(author); // add to arralist
-//            }
-//            return authors;
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-    /**
-     * Select all Authors from database with respect of their published books
-     * authors alphabetically by last name and then by first name
-     *
-     *
-     * @return List<List<String>>
-     */
-//    public List<List<String>> selectAuthorsRanking() {
-//        try {
-//            List<List<String>> authorsRanking = new ArrayList<>();
-//            String query = "SELECT Authors.authorId, Authors.firstName, Authors.lastName, COUNT(AuthorISBN.ISBN) "
-//                    + " FROM Authors, AuthorISBN "
-//                    + " WHERE Authors.authorId = AuthorISBN.authorId "
-//                    + " GROUP BY Authors.authorId "
-//                    + " ORDER BY Authors.authorId, Authors.lastName, Authors.firstName "
-//                    + ";";
-//            st = conn.createStatement(); // create statement
-//            rs = st.executeQuery(query); // execute query
-//            //read authors
-//            while (rs.next()) {
-//                List<String> authors = new ArrayList<>();
-//                authors.add(rs.getString(1));
-//                authors.add(rs.getString(2));
-//                authors.add(rs.getString(3));
-//                authors.add(rs.getString(4));
-//                authorsRanking.add(authors); // add to arralist
-//            }
-//            return authorsRanking;
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-    /**
-     * Select all Authors from database with respect of their book popularity
-     * authors alphabetically by last name and then by first name
-     *
-     * @param title String
-     * @return ArrayList<ArrayList<String>>
-     */
-//    public List<List<String>> selectAuthorsRanking(String title) {
-//        try {
-//            List<List<String>> authorsRanking = new ArrayList<>();
-//            String query = "SELECT Authors.authorId, Authors.firstName, Authors.lastName, Titles.title, Titles.editionNumber "
-//                    + " FROM Authors, Titles , AuthorISBN "
-//                    + " WHERE Authors.authorId = AuthorISBN.authorId AND AuthorISBN.ISBN = Titles.ISBN AND Titles.title LIKE '%" + title + "%' "
-//                    + " ORDER BY Titles.title, Titles.editionNumber, Authors.lastName, Authors.firstName "
-//                    + ";";
-//            st = conn.createStatement(); // create statement
-//            rs = st.executeQuery(query); // execute query
-//            //read authors
-//            while (rs.next()) {
-//                List<String> authors = new ArrayList<>();
-//                authors.add(rs.getString(1));
-//                authors.add(rs.getString(2));
-//                authors.add(rs.getString(3));
-//                authors.add(rs.getString(4));
-//                authors.add(rs.getString(5));
-//                authorsRanking.add(authors); // add to arralist
-//            }
-//            return authorsRanking;
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
     /**
      * Close all connection
      *

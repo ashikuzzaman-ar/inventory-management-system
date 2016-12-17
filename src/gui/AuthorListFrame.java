@@ -1,3 +1,6 @@
+/**
+ * This class shows all authors
+ */
 package gui;
 
 import java.util.Map;

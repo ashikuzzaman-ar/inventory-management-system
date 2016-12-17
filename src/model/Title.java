@@ -1,3 +1,6 @@
+/**
+ * Title model class for storing book info into database
+ */
 package model;
 
 import java.util.Objects;
@@ -6,7 +9,7 @@ import java.util.Objects;
 /**
  * Represent a book title
  *
- * @author
+ * @author ashik
  */
 public class Title {
 

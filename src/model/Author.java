@@ -1,3 +1,6 @@
+/**
+ * Author model class
+ */
 package model;
 
 

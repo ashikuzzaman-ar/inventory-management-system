@@ -1,3 +1,6 @@
+/**
+ * Mapping class for Author and Title
+ */
 package model;
 
 

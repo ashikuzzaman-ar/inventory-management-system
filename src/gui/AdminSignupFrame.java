@@ -1,3 +1,6 @@
+/**
+ * This frame is used for creating new admin user
+ */
 package gui;
 
 import java.awt.Color;

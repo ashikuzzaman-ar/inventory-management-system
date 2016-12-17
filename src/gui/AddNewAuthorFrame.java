@@ -1,3 +1,6 @@
+/**
+ * This frame add new author to the database
+ */
 package gui;
 
 import java.awt.Color;
