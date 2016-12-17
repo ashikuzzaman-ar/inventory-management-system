@@ -9,8 +9,9 @@ import javax.swing.table.DefaultTableModel;
 import model.Author;
 import service.Database;
 
-/*
- * Main GUI Form to launch the application
+/**
+ * @author Jkosgei
+ * 
  */
 public class AuthorListFrame extends javax.swing.JFrame {
 

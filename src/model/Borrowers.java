@@ -7,7 +7,7 @@ import java.util.Objects;
 
 /**
  *
- * @author ashik
+ * @author Jkosgei
  */
 public class Borrowers {
 

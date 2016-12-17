@@ -3,6 +3,10 @@
  */
 package model;
 
+/**
+ * 
+ * @author Jkosgei
+ */
 
 public class AuthorISBN {
 

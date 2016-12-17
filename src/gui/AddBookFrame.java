@@ -15,7 +15,7 @@ import service.Database;
 
 /**
  *
- * @author ashif
+ * @author Jkosgei
  */
 public class AddBookFrame extends javax.swing.JFrame {
 

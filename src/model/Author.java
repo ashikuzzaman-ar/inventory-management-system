@@ -7,7 +7,7 @@ package model;
 /**
  * Represent a book author
  *
- * @author
+ * @author Jkosgei
  */
 public class Author {
 

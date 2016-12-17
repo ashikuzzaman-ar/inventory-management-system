@@ -13,7 +13,7 @@ import service.Database;
 
 /**
  *
- * Add new author form
+ * @author Jkosgei
  */
 public class AddNewAuthorFrame extends javax.swing.JFrame {
 
@@ -180,7 +180,7 @@ public class AddNewAuthorFrame extends javax.swing.JFrame {
                 return;
             }
 
-            Author author = new Author(Integer.MAX_VALUE, tfFirstName.getText(), tfLastName.getText());
+            Author author = new Author(this.authors.size()+1, tfFirstName.getText(), tfLastName.getText());
 
             boolean success = this.database.insertNewAuthor(author);
 
@@ -194,7 +194,10 @@ public class AddNewAuthorFrame extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Something went wrong. Please try again.");
             }
 
-            this.parent.setVisible(true);
+            java.awt.EventQueue.invokeLater(() -> {
+                new AuthorListFrame(this.database, this.authors).setVisible(true);
+            });
+            this.parent.dispose();
             this.dispose();
         } catch (HeadlessException | NumberFormatException e) {
 

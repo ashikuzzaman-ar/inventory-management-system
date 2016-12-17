@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Represent a book title
  *
- * @author ashik
+ * @author Jkosgei
  */
 public class Title {
 

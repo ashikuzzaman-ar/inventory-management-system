@@ -68,7 +68,7 @@
                   <EmptySpace min="-2" pref="212" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="bReturn" max="32767" attributes="0"/>
-                      <Component id="bPursue" pref="81" max="32767" attributes="0"/>
+                      <Component id="bBorrow" pref="81" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
               </Group>
@@ -107,7 +107,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="bSearch" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
                       <Component id="tfSearch" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
-                      <Component id="bPursue" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="bBorrow" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="12" max="32767" attributes="0"/>
               </Group>
@@ -154,13 +154,13 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bUpdateActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="bPursue">
+        <Component class="javax.swing.JButton" name="bBorrow">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Pursue"/>
+            <Property name="text" type="java.lang.String" value="Borrow"/>
             <Property name="toolTipText" type="java.lang.String" value="Pursue Selected Book"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bPursueActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bBorrowActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="tfSearch">
@@ -267,15 +267,12 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="jScrollPane2" pref="338" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jScrollPane2" alignment="1" pref="338" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" alignment="1" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="lvlBookStatusTitle" min="-2" pref="322" max="-2" attributes="0"/>
@@ -358,7 +355,7 @@
                   <Table columnCount="4" rowCount="0">
                     <Column editable="false" title="Name" type="java.lang.String"/>
                     <Column editable="false" title="Phone" type="java.lang.String"/>
-                    <Column editable="false" title="Pursue" type="java.lang.String"/>
+                    <Column editable="false" title="Borrow" type="java.lang.String"/>
                     <Column editable="false" title="Return" type="java.lang.String"/>
                   </Table>
                 </Property>
@@ -374,7 +371,7 @@
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                       <Title/>
                       <Editor/>
                       <Renderer/>

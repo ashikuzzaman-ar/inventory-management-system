@@ -19,7 +19,7 @@ import service.Database;
 
 /**
  *
- * @author ashik
+ * @author Jkosgei
  */
 public class HomeFrame extends javax.swing.JFrame {
 
@@ -35,7 +35,7 @@ public class HomeFrame extends javax.swing.JFrame {
     private final DefaultTableModel defaultTableModelMainBookList;
     private final DefaultTableModel defaultTableModelBookInfoTable;
     private final DefaultTableModel defaultTableModelBookBorrowerTable;
-    private PursueFrame pursueFrame;
+    private BorrowFrame borrowFrame;
     private ReturnFrame returnFrame;
 
     /**
@@ -334,7 +334,7 @@ public class HomeFrame extends javax.swing.JFrame {
         bAddBook = new javax.swing.JButton();
         bAuthorList = new javax.swing.JButton();
         bUpdate = new javax.swing.JButton();
-        bPursue = new javax.swing.JButton();
+        bBorrow = new javax.swing.JButton();
         tfSearch = new javax.swing.JTextField();
         bSearch = new javax.swing.JButton();
         bReturn = new javax.swing.JButton();
@@ -382,11 +382,11 @@ public class HomeFrame extends javax.swing.JFrame {
             }
         });
 
-        bPursue.setText("Pursue");
-        bPursue.setToolTipText("Pursue Selected Book");
-        bPursue.addActionListener(new java.awt.event.ActionListener() {
+        bBorrow.setText("Borrow");
+        bBorrow.setToolTipText("Pursue Selected Book");
+        bBorrow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bPursueActionPerformed(evt);
+                bBorrowActionPerformed(evt);
             }
         });
 
@@ -425,7 +425,7 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addGap(212, 212, 212)
                 .addGroup(pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(bReturn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bPursue, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
+                    .addComponent(bBorrow, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
                 .addGap(71, 71, 71))
             .addGroup(pHomePanelLayout.createSequentialGroup()
                 .addGap(180, 180, 180)
@@ -458,7 +458,7 @@ public class HomeFrame extends javax.swing.JFrame {
                 .addGroup(pHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bPursue, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bBorrow, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -519,7 +519,7 @@ public class HomeFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Name", "Phone", "Pursue", "Return"
+                "Name", "Phone", "Borrow", "Return"
             }
         ) {
             Class[] types = new Class [] {
@@ -540,6 +540,7 @@ public class HomeFrame extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tblBookBorrowerTable);
         if (tblBookBorrowerTable.getColumnModel().getColumnCount() > 0) {
             tblBookBorrowerTable.getColumnModel().getColumn(0).setResizable(false);
+            tblBookBorrowerTable.getColumnModel().getColumn(2).setResizable(false);
             tblBookBorrowerTable.getColumnModel().getColumn(3).setResizable(false);
         }
 
@@ -557,13 +558,11 @@ public class HomeFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                            .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addContainerGap()))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
+                        .addGroup(pBookStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pBookStatusPanelLayout.createSequentialGroup()
                         .addComponent(lvlBookStatusTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(14, 14, 14))))
@@ -624,7 +623,7 @@ public class HomeFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bAddBookActionPerformed
 
-    private void bPursueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPursueActionPerformed
+    private void bBorrowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBorrowActionPerformed
 
         try {
 
@@ -635,9 +634,9 @@ public class HomeFrame extends javax.swing.JFrame {
                 java.awt.EventQueue.invokeLater(() -> {
 
                     String ISBN = (String) this.defaultTableModelMainBookList.getValueAt(index, 2);
-                    pursueFrame = new PursueFrame(database, ISBN, this.titles,
+                    borrowFrame = new BorrowFrame(database, ISBN, this.titles,
                             borrowers, borrowerISBNs, titleBorrowersMap);
-                    pursueFrame.setVisible(true);
+                    borrowFrame.setVisible(true);
                 });
             } else {
 
@@ -647,7 +646,7 @@ public class HomeFrame extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, e);
         }
-    }//GEN-LAST:event_bPursueActionPerformed
+    }//GEN-LAST:event_bBorrowActionPerformed
 
     private void bSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSearchActionPerformed
 
@@ -785,8 +784,8 @@ public class HomeFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddBook;
     private javax.swing.JButton bAuthorList;
+    private javax.swing.JButton bBorrow;
     private javax.swing.JButton bDelete;
-    private javax.swing.JButton bPursue;
     private javax.swing.JButton bReturn;
     private javax.swing.JButton bSearch;
     private javax.swing.JButton bUpdate;

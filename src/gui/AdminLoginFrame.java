@@ -11,7 +11,7 @@ import service.Database;
 
 /**
  *
- * @author ashik
+ * @author Jkosgei
  */
 public class AdminLoginFrame extends javax.swing.JFrame {
 

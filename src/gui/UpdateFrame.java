@@ -13,7 +13,7 @@ import service.Database;
 
 /**
  *
- * @author ashif
+ * @author Jkosgei
  */
 public class UpdateFrame extends javax.swing.JFrame {
     

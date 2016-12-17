@@ -22,6 +22,10 @@ import model.BorrowerISBN;
 import model.Borrowers;
 import model.Title;
 
+/**
+ *
+ * @author Jkosgei
+ */
 public class Database implements Serializable, Closeable {
 
     /**
@@ -343,10 +347,10 @@ public class Database implements Serializable, Closeable {
 
         try {
 
-            author.setAuthorId(this.statement.executeUpdate("INSERT INTO `BOOKS`.`Authors` "
+            this.statement.executeUpdate("INSERT INTO `BOOKS`.`Authors` "
                     + "(`firstName`, `lastName`) "
                     + "VALUES('" + author.getFirstName() + "',"
-                    + "'" + author.getLastName() + "')"));
+                    + "'" + author.getLastName() + "')");
             isOk = true;
         } catch (SQLException e) {
 

@@ -9,7 +9,7 @@ import service.Database;
 
 /**
  *
- * @author ashik
+ * @author Jkosgei
  */
 public class Main {
 
