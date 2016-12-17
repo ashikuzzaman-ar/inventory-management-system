@@ -285,6 +285,27 @@ public class Database implements Serializable, Closeable {
         return isInserted;
     }
 
+    public boolean updateTitle(Title title) {
+
+        boolean isOk = false;
+
+        try {
+
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate("UPDATE `BOOKS`.`Titles` SET "
+                    + "`editionNumber`='" + title.getEditionNumber() + "', "
+                    + "`totalNumber`='" + title.getTotalNumber() + "', "
+                    + "`copyright`='" + title.getCopyRight() + "' "
+                    + "WHERE `ISBN`='" + title.getISBN() + "'");
+            isOk = true;
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return isOk;
+    }
+
     public boolean deleteTitle(String ISBN) {
 
         boolean isOk = false;

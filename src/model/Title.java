@@ -79,6 +79,10 @@ public class Title {
         this.title = title;
     }
 
+    public void setTotalNumber(int totalNumber) {
+        this.totalNumber = totalNumber;
+    }
+
     /**
      * Get book edition
      *

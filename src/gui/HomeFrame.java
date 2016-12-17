@@ -24,7 +24,7 @@ import service.Database;
  * @author ashik
  */
 public class HomeFrame extends javax.swing.JFrame {
-
+    
     private final Database database;
     private Map<String, Title> titles;
     private Map<String, Author> authors;
@@ -33,7 +33,7 @@ public class HomeFrame extends javax.swing.JFrame {
     private Map<String, List<String>> authorTitleMap;
     private Map<String, List<String>> titleAuthorMap;
     private Map<String, List<String>> titleBorrowersMap;
-
+    
     private final DefaultTableModel defaultTableModelMainBookList;
     private final DefaultTableModel defaultTableModelBookInfoTable;
     private final DefaultTableModel defaultTableModelBookBorrowerTable;
@@ -50,7 +50,7 @@ public class HomeFrame extends javax.swing.JFrame {
      * @param database
      */
     public HomeFrame(Database database) {
-
+        
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -61,7 +61,7 @@ public class HomeFrame extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AdminLoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
+        
         this.initComponents();
         this.defaultTableModelMainBookList = (DefaultTableModel) this.tblMainBookList.getModel();
         this.defaultTableModelBookInfoTable = (DefaultTableModel) this.tblBookInfoTable.getModel();
@@ -70,11 +70,11 @@ public class HomeFrame extends javax.swing.JFrame {
         this.initializeDatabase();
         this.initializeMainBookListTable();
     }
-
+    
     private void clearMemory() {
-
+        
         try {
-
+            
             if (this.titles != null) {
                 this.titles.clear();
             }
@@ -97,17 +97,17 @@ public class HomeFrame extends javax.swing.JFrame {
                 this.titleBorrowersMap.clear();
             }
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }
-
+    
     private void initializeDatabase() {
-
+        
         try {
-
+            
             this.clearMemory();
-
+            
             this.titles = this.database.selectTitles();
             this.authors = this.database.selectAuthors();
             this.borrowers = this.database.selectBorrowers();
@@ -115,27 +115,27 @@ public class HomeFrame extends javax.swing.JFrame {
             this.borrowerISBNs = this.database.selectBorrowerISBN();
             this.initializeBorrowersTitleMap();
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }
-
+    
     private void initializeBorrowersTitleMap() {
-
+        
         try {
-
+            
             if (this.titleBorrowersMap == null) {
-
+                
                 this.titleBorrowersMap = new HashMap<>();
             }
-
+            
             this.borrowerISBNs.stream().forEach(borrowersISBN -> {
-
+                
                 if (this.titleBorrowersMap.containsKey(borrowersISBN.getISBN())) {
-
+                    
                     this.titleBorrowersMap.get(borrowersISBN.getISBN()).add(String.valueOf(borrowersISBN.getBorrowerId()));
                 } else {
-
+                    
                     List<String> borrowerses = new ArrayList<>();
                     borrowerses.add(String.valueOf(borrowersISBN.getBorrowerId()));
                     this.titleBorrowersMap.put(borrowersISBN.getISBN(), borrowerses);
@@ -145,118 +145,118 @@ public class HomeFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e);
         }
     }
-
+    
     private void initializeAuthorTitleMap(List<AuthorISBN> authorISBNs) {
-
+        
         try {
-
+            
             if (this.authorTitleMap == null) {
-
+                
                 this.authorTitleMap = new HashMap<>();
             }
             if (this.titleAuthorMap == null) {
-
+                
                 this.titleAuthorMap = new HashMap<>();
             }
-
+            
             authorISBNs.stream().forEach(authorISBN -> {
-
+                
                 if (this.authorTitleMap.containsKey(authorISBN.getAuthorId())) {
-
+                    
                     this.authorTitleMap.get(authorISBN.getAuthorId()).add(authorISBN.getISBN());
                 } else {
-
+                    
                     List<String> isbnList = new ArrayList<>();
                     isbnList.add(authorISBN.getISBN());
                     this.authorTitleMap.put(String.valueOf(authorISBN.getAuthorId()), isbnList);
                 }
-
+                
                 if (this.titleAuthorMap.containsKey(authorISBN.getISBN())) {
-
+                    
                     this.titleAuthorMap.get(authorISBN.getISBN()).add(String.valueOf(authorISBN.getAuthorId()));
                 } else {
-
+                    
                     List<String> idList = new ArrayList<>();
                     idList.add(String.valueOf(authorISBN.getAuthorId()));
                     this.titleAuthorMap.put(authorISBN.getISBN(), idList);
                 }
             });
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }
-
+    
     private void clearBookBorrowerTable() {
-
+        
         try {
-
+            
             for (int i = this.defaultTableModelBookBorrowerTable.getRowCount() - 1; i >= 0; i--) {
-
+                
                 this.defaultTableModelBookBorrowerTable.removeRow(i);
             }
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }
-
+    
     private void clearBookInfoTable() {
-
+        
         try {
-
+            
             for (int i = this.defaultTableModelBookInfoTable.getRowCount() - 1; i >= 0; i--) {
-
+                
                 this.defaultTableModelBookInfoTable.removeRow(i);
             }
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }
-
+    
     private void clearMainBookListTable() {
-
+        
         try {
-
+            
             for (int i = this.defaultTableModelMainBookList.getRowCount() - 1; i >= 0; i--) {
-
+                
                 this.defaultTableModelMainBookList.removeRow(i);
             }
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }
-
+    
     private void initializeMainBookListTable() {
-
+        
         try {
-
+            
             this.clearMainBookListTable();
             if (this.titles != null && this.titles.size() > 0) {
-
+                
                 this.titles.entrySet().stream().forEach(t -> {
-
+                    
                     Title title = t.getValue();
                     StringBuilder authorList = new StringBuilder();
                     List<String> tempAuthorList = this.titleAuthorMap.get(title.getISBN());
-
+                    
                     tempAuthorList.stream().forEach(al -> {
-
+                        
                         authorList.append(this.authors.get(al).getFirstName());
                         authorList.append(" ");
                         authorList.append(this.authors.get(al).getLastName());
                         authorList.append(",");
                     });
-
+                    
                     int borrowedNumber = 0;
-
+                    
                     if (this.titleBorrowersMap.containsKey(title.getISBN())) {
-
+                        
                         borrowedNumber = this.titleBorrowersMap.get(title.getISBN()).size();
                     }
-
+                    
                     this.defaultTableModelMainBookList.addRow(new Object[]{
                         title.getTitle(),
                         authorList.toString(),
@@ -267,42 +267,42 @@ public class HomeFrame extends javax.swing.JFrame {
                 });
             }
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }
-
+    
     private void initializeMainBookListTable(String bookTitle) {
-
+        
         try {
-
+            
             this.clearMainBookListTable();
             if (this.titles != null && this.titles.size() > 0) {
-
+                
                 this.titles.entrySet().stream().forEach(t -> {
-
+                    
                     Title title = t.getValue();
-
+                    
                     if (title.getTitle().toLowerCase().contains(bookTitle.toLowerCase())) {
-
+                        
                         StringBuilder authorList = new StringBuilder();
                         List<String> tempAuthorList = this.titleAuthorMap.get(title.getISBN());
-
+                        
                         tempAuthorList.stream().forEach(al -> {
-
+                            
                             authorList.append(this.authors.get(al).getFirstName());
                             authorList.append(" ");
                             authorList.append(this.authors.get(al).getLastName());
                             authorList.append(",");
                         });
-
+                        
                         int borrowedNumber = 0;
-
+                        
                         if (this.titleBorrowersMap.containsKey(title.getISBN())) {
-
+                            
                             borrowedNumber = this.titleBorrowersMap.get(title.getISBN()).size();
                         }
-
+                        
                         this.defaultTableModelMainBookList.addRow(new Object[]{
                             title.getTitle(),
                             authorList.toString(),
@@ -314,7 +314,7 @@ public class HomeFrame extends javax.swing.JFrame {
                 });
             }
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }
@@ -375,6 +375,11 @@ public class HomeFrame extends javax.swing.JFrame {
 
         bUpdate.setText("Update");
         bUpdate.setToolTipText("Update Selected Book Info");
+        bUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bUpdateActionPerformed(evt);
+            }
+        });
 
         bPursue.setText("Pursue");
         bPursue.setToolTipText("Pursue Selected Book");
@@ -606,94 +611,94 @@ public class HomeFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bAddBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddBookActionPerformed
-
+        
         try {
-
+            
             java.awt.EventQueue.invokeLater(() -> {
                 new AddBookFrame(this.database, this.authors, this.titles, this.authorTitleMap, this.titleAuthorMap).setVisible(true);
             });
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_bAddBookActionPerformed
 
     private void bPursueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPursueActionPerformed
-
+        
         try {
-
+            
             int index = this.tblMainBookList.getSelectedRow();
-
+            
             if (index >= 0) {
-
+                
                 java.awt.EventQueue.invokeLater(() -> {
-
+                    
                     String ISBN = (String) this.defaultTableModelMainBookList.getValueAt(index, 2);
                     pursueFrame = new PursueFrame(database, ISBN, this.titles,
                             borrowers, borrowerISBNs, titleBorrowersMap);
                     pursueFrame.setVisible(true);
                 });
             } else {
-
+                
                 JOptionPane.showMessageDialog(this, "Please select a book first then try again.");
             }
         } catch (HeadlessException e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_bPursueActionPerformed
 
     private void bSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSearchActionPerformed
-
+        
         try {
-
+            
             this.initializeMainBookListTable(this.tfSearch.getText());
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_bSearchActionPerformed
 
     private void bReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bReturnActionPerformed
-
+        
         try {
-
+            
             java.awt.EventQueue.invokeLater(() -> {
-
+                
                 returnFrame = new ReturnFrame(database, this.titles,
                         borrowers, borrowerISBNs, titleBorrowersMap);
                 returnFrame.setVisible(true);
             });
         } catch (HeadlessException e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_bReturnActionPerformed
 
     private void tblMainBookListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMainBookListMouseClicked
-
+        
         try {
-
+            
             this.clearBookInfoTable();
             this.clearBookBorrowerTable();
-
+            
             int index = this.tblMainBookList.getSelectedRow();
-
+            
             if (index >= 0) {
-
+                
                 String ISBN = (String) this.defaultTableModelMainBookList.getValueAt(index, 2);
-
+                
                 this.lvlBookStatusTitle.setText(this.titles.get(ISBN).getTitle());
-
+                
                 this.defaultTableModelBookInfoTable.addRow(new Object[]{
                     ISBN,
                     this.titles.get(ISBN).getEditionNumber()
                 });
-
+                
                 if (this.titleBorrowersMap.get(ISBN) != null) {
-
+                    
                     this.titleBorrowersMap.get(ISBN).stream().forEach(b -> {
-
+                        
                         Borrowers borrower = this.borrowers.get(b);
                         BorrowerISBN borrowerISBN = this.borrowerISBNs.get(this.borrowerISBNs.indexOf(new BorrowerISBN(borrower.getId(), ISBN)));
                         this.defaultTableModelBookBorrowerTable.addRow(new Object[]{
@@ -706,7 +711,7 @@ public class HomeFrame extends javax.swing.JFrame {
                 }
             }
         } catch (Exception e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_tblMainBookListMouseClicked
@@ -716,33 +721,55 @@ public class HomeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_bAuthorListActionPerformed
 
     private void bDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteActionPerformed
-
+        
         try {
-
+            
             int index = this.tblMainBookList.getSelectedRow();
-
+            
             if (index >= 0) {
-
+                
                 int decession = JOptionPane.showConfirmDialog(this, "Are you sure to delete this entry?");
-
+                
                 if (decession == 0) {
-
+                    
                     if (this.database.deleteTitle((String) this.defaultTableModelMainBookList.getValueAt(index, 2))) {
-
+                        
                         this.initializeDatabase();
                         this.initializeMainBookListTable();
                         this.bSearchActionPerformed(evt);
                     }
                 }
             } else {
-
+                
                 JOptionPane.showMessageDialog(this, "Please choose a book first then try again.");
             }
         } catch (HeadlessException e) {
-
+            
             JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_bDeleteActionPerformed
+
+    private void bUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUpdateActionPerformed
+        
+        try {
+            
+            int index = this.tblMainBookList.getSelectedRow();
+            
+            if (index >= 0) {
+                
+                java.awt.EventQueue.invokeLater(() -> {
+                    
+                    new UpdateFrame(this.database, (String) this.defaultTableModelMainBookList.getValueAt(index, 2), this.authors, this.titles, this.authorTitleMap, this.titleAuthorMap).setVisible(true);
+                });
+            } else {
+                
+                JOptionPane.showMessageDialog(this, "Please choose a book first then try again.");
+            }
+        } catch (HeadlessException e) {
+            
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_bUpdateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
