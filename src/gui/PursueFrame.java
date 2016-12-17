@@ -4,6 +4,7 @@
 package gui;
 
 import java.awt.HeadlessException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -355,10 +356,9 @@ public class PursueFrame extends javax.swing.JFrame {
         try {
 
             String borrowerId = this.tfStudentID.getText();
-
             this.clearTables();
 
-            if (this.borrowers.containsKey(borrowerId)) {
+            if (this.borrowers != null && this.borrowers.containsKey(borrowerId)) {
 
                 Borrowers borrower = this.borrowers.get(borrowerId);
 
@@ -406,7 +406,15 @@ public class PursueFrame extends javax.swing.JFrame {
                 if (this.database.insertBorrowerISBN(borrowerISBN)) {
 
                     this.borrowerISBNs.add(borrowerISBN);
-                    this.titleBorrowersMap.get(this.ISBN).add(borrowerId);
+                    if (this.titleBorrowersMap.containsKey(this.ISBN)) {
+
+                        this.titleBorrowersMap.get(this.ISBN).add(borrowerId);
+                    } else {
+
+                        List<String> b = new ArrayList<>();
+                        b.add(borrowerId);
+                        this.titleBorrowersMap.put(this.ISBN, b);
+                    }
                     JOptionPane.showMessageDialog(this, "Successfully Pursued!");
                     this.bCheckAvailableActionPerformed(evt);
                 }
