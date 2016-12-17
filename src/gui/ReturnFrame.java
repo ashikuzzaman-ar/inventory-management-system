@@ -22,7 +22,6 @@ import service.Database;
 public class ReturnFrame extends javax.swing.JFrame {
 
     private final Database database;
-//    private final String ISBN;
     private final Map<String, Title> titles;
     private final Map<String, Borrowers> borrowers;
     private final List<BorrowerISBN> borrowerISBNs;
@@ -58,7 +57,6 @@ public class ReturnFrame extends javax.swing.JFrame {
         this.initComponents();
         this.hidingInformationPanel(true);
         this.database = database;
-//        this.ISBN = ISBN;
         this.titles = titles;
         this.borrowers = borrowers;
         this.borrowerISBNs = borrowerISBNs;
@@ -323,7 +321,6 @@ public class ReturnFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tfStudentIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfStudentIDActionPerformed
-        // TODO: Ashik vai, write manupulation code for Student ID textfield
     }//GEN-LAST:event_tfStudentIDActionPerformed
 
     private void bCancelReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelReturnActionPerformed
