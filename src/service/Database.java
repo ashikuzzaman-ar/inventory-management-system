@@ -421,6 +421,34 @@ public class Database implements Serializable, Closeable {
         return borrowerISBNs;
     }
 
+    public boolean insertBorrowerISBN(BorrowerISBN borrowerISBN) {
+
+        boolean isOk = false;
+
+        try {
+
+            this.sql = "SELECT * FROM `BOOKS`.`BorrowerISBN` \n"
+                    + "WHERE `BOOKS`.`BorrowerISBN`.`borrowerId` = " + borrowerISBN.getBorrowerId() + " AND `BOOKS`.`BorrowerISBN`.`ISBN` = '" + borrowerISBN.getISBN() + "'";
+            this.statement = this.connection.createStatement();
+            this.resultSet = this.statement.executeQuery(this.sql);
+            if (this.resultSet.next()) {
+
+                JOptionPane.showMessageDialog(null, "This book is already registered by this borrower.");
+            } else {
+
+                this.statement.executeUpdate("INSERT INTO `BOOKS`.`BorrowerISBN` (`borrowerId`, `ISBN`, `pursueDate`, `returnDate`) "
+                        + "VALUES(" + borrowerISBN.getBorrowerId() + ",'" + borrowerISBN.getISBN() + "', '" + borrowerISBN.getPursueDate() + "', '" + borrowerISBN.getReturnDate() + "')");
+
+                isOk = true;
+            }
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        return isOk;
+    }
+
     /**
      * Select all authors from database
      *

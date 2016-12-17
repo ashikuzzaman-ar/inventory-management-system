@@ -5,16 +5,46 @@
  */
 package gui;
 
+import java.awt.HeadlessException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.BorrowerISBN;
+import model.Borrowers;
+import model.Title;
+import service.Database;
+
 /**
  *
  * @author ashif
  */
 public class PursueFrame extends javax.swing.JFrame {
 
+    private final Database database;
+    private final String ISBN;
+    private final Map<String, Title> titles;
+    private final Map<String, Borrowers> borrowers;
+    private final List<BorrowerISBN> borrowerISBNs;
+    private final Map<String, List<String>> titleBorrowersMap;
+    private final DefaultTableModel defaultTableModelStudentInfo;
+    private final DefaultTableModel defaultTableModelBorrowedBooks;
+
     /**
      * Creates new form PersueFrame
+     *
+     * @param database
+     * @param ISBN
+     * @param titles
+     * @param borrowers
+     * @param borrowerISBNs
+     * @param titleBorrowersMap
      */
-    public PursueFrame() {
+    public PursueFrame(Database database, String ISBN, Map<String, Title> titles,
+            Map<String, Borrowers> borrowers, List<BorrowerISBN> borrowerISBNs,
+            Map<String, List<String>> titleBorrowersMap) {
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -25,8 +55,50 @@ public class PursueFrame extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AdminLoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         initComponents();
+        this.hidingInformationPanel(true);
+        this.database = database;
+        this.ISBN = ISBN;
+        this.titles = titles;
+        this.borrowers = borrowers;
+        this.borrowerISBNs = borrowerISBNs;
+        this.titleBorrowersMap = titleBorrowersMap;
+
+        this.defaultTableModelStudentInfo = (DefaultTableModel) this.tblStudentInfo.getModel();
+        this.defaultTableModelBorrowedBooks = (DefaultTableModel) this.tblBorrowedBooks.getModel();
+        this.lvlBookTitle.setText(this.titles.get(this.ISBN).getTitle());
+    }
+
+    private void hidingInformationPanel(boolean hide) {
+
+        try {
+
+            this.pBorrowedBooksPanel.setVisible(!hide);
+            this.pStudentInfoPanel.setVisible(!hide);
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    private void clearTables() {
+
+        try {
+
+            for (int i = this.defaultTableModelStudentInfo.getRowCount() - 1; i >= 0; i--) {
+
+                this.defaultTableModelStudentInfo.removeRow(i);
+            }
+
+            for (int i = this.defaultTableModelBorrowedBooks.getRowCount() - 1; i >= 0; i--) {
+
+                this.defaultTableModelBorrowedBooks.removeRow(i);
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
     }
 
     /**
@@ -45,7 +117,7 @@ public class PursueFrame extends javax.swing.JFrame {
         bCheckAvailable = new javax.swing.JButton();
         pStudentInfoPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblstudentInfo = new javax.swing.JTable();
+        tblStudentInfo = new javax.swing.JTable();
         pBorrowedBooksPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -58,7 +130,7 @@ public class PursueFrame extends javax.swing.JFrame {
         setResizable(false);
 
         lvlBookTitle.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
-        lvlBookTitle.setText("Book Name will be here");
+        lvlBookTitle.setText(" ");
 
         jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
         jLabel2.setText("Student ID: ");
@@ -70,13 +142,18 @@ public class PursueFrame extends javax.swing.JFrame {
         });
 
         bCheckAvailable.setText("Check");
+        bCheckAvailable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCheckAvailableActionPerformed(evt);
+            }
+        });
 
-        tblstudentInfo.setModel(new javax.swing.table.DefaultTableModel(
+        tblStudentInfo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null}
+
             },
             new String [] {
-                "Name", "Department"
+                "Name", "Phone Number"
             }
         ) {
             Class[] types = new Class [] {
@@ -94,11 +171,7 @@ public class PursueFrame extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblstudentInfo);
-        if (tblstudentInfo.getColumnModel().getColumnCount() > 0) {
-            tblstudentInfo.getColumnModel().getColumn(0).setResizable(false);
-            tblstudentInfo.getColumnModel().getColumn(1).setResizable(false);
-        }
+        jScrollPane1.setViewportView(tblStudentInfo);
 
         javax.swing.GroupLayout pStudentInfoPanelLayout = new javax.swing.GroupLayout(pStudentInfoPanel);
         pStudentInfoPanel.setLayout(pStudentInfoPanelLayout);
@@ -178,15 +251,6 @@ public class PursueFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        bFinalizePursue.setText("Pursue");
-
-        bCancelPursue.setText("Cancel");
-        bCancelPursue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bCancelPursueActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -199,26 +263,16 @@ public class PursueFrame extends javax.swing.JFrame {
                     .addComponent(pStudentInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lvlBookTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(101, 101, 101)
-                                .addComponent(lvlBookTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(bCheckAvailable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(bCancelPursue, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(73, 73, 73)
-                        .addComponent(bFinalizePursue, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(bCheckAvailable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -235,12 +289,22 @@ public class PursueFrame extends javax.swing.JFrame {
                 .addComponent(pStudentInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pBorrowedBooksPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bFinalizePursue, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
-                    .addComponent(bCancelPursue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGap(0, 27, Short.MAX_VALUE))
         );
+
+        bFinalizePursue.setText("Pursue");
+        bFinalizePursue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bFinalizePursueActionPerformed(evt);
+            }
+        });
+
+        bCancelPursue.setText("Cancel");
+        bCancelPursue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCancelPursueActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -248,16 +312,33 @@ public class PursueFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(bCancelPursue, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bFinalizePursue, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 9, Short.MAX_VALUE)))
+                .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bCancelPursue, bFinalizePursue});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bFinalizePursue, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bCancelPursue, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bCancelPursue, bFinalizePursue});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -267,12 +348,81 @@ public class PursueFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tfStudentIDActionPerformed
 
     private void bCancelPursueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCancelPursueActionPerformed
-        // TODO add your handling code here:
+
+        this.dispose();
     }//GEN-LAST:event_bCancelPursueActionPerformed
 
-    
-    
-    
+    private void bCheckAvailableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCheckAvailableActionPerformed
+
+        try {
+
+            String borrowerId = this.tfStudentID.getText();
+
+            this.clearTables();
+
+            if (this.borrowers.containsKey(borrowerId)) {
+
+                Borrowers borrower = this.borrowers.get(borrowerId);
+
+                this.defaultTableModelStudentInfo.addRow(new Object[]{
+                    borrower.getFirstName() + " " + borrower.getLastName(),
+                    borrower.getPhoneNumber()
+                });
+
+                this.borrowerISBNs.stream().forEach(b -> {
+
+                    if (b.getBorrowerId() == Integer.parseInt(borrowerId)) {
+
+                        this.defaultTableModelBorrowedBooks.addRow(new Object[]{
+                            this.titles.get(b.getISBN()).getTitle(),
+                            b.getISBN(),
+                            b.getPursueDate(),
+                            b.getReturnDate()
+                        });
+                    }
+                });
+
+                this.hidingInformationPanel(false);
+            } else {
+
+                this.hidingInformationPanel(true);
+                JOptionPane.showMessageDialog(this, "Invalid borrower ID. Please try again.");
+            }
+        } catch (HeadlessException e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_bCheckAvailableActionPerformed
+
+    private void bFinalizePursueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFinalizePursueActionPerformed
+
+        try {
+
+            String borrowerId = this.tfStudentID.getText();
+
+            if (this.borrowers.containsKey(borrowerId)) {
+
+                Date date = new Date();
+                BorrowerISBN borrowerISBN = new BorrowerISBN(Integer.parseInt(borrowerId), this.ISBN, date.toString(), new Date(date.getTime() + 7 * 24 * 60 * 60 * 1000).toString());
+
+                if (this.database.insertBorrowerISBN(borrowerISBN)) {
+
+                    this.borrowerISBNs.add(borrowerISBN);
+                    this.titleBorrowersMap.get(this.ISBN).add(borrowerId);
+                    JOptionPane.showMessageDialog(this, "Successfully Pursued!");
+                    this.bCheckAvailableActionPerformed(evt);
+                }
+            } else {
+
+                this.hidingInformationPanel(true);
+                JOptionPane.showMessageDialog(this, "Invalid borrower ID. Please try again.");
+            }
+        } catch (HeadlessException e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_bFinalizePursueActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCancelPursue;
@@ -287,7 +437,7 @@ public class PursueFrame extends javax.swing.JFrame {
     private javax.swing.JPanel pBorrowedBooksPanel;
     private javax.swing.JPanel pStudentInfoPanel;
     private javax.swing.JTable tblBorrowedBooks;
-    private javax.swing.JTable tblstudentInfo;
+    private javax.swing.JTable tblStudentInfo;
     private javax.swing.JTextField tfStudentID;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,7 +5,8 @@
  */
 package core;
 
-import gui.AdminLoginFrame;
+import gui.HomeFrame;
+import javax.swing.JOptionPane;
 import service.Database;
 
 /**
@@ -13,19 +14,24 @@ import service.Database;
  * @author ashik
  */
 public class Main {
-
+    
     private static final Database DATABASE = new Database();
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        try {
+            
+            java.awt.EventQueue.invokeLater(() -> {
 
-        AdminLoginFrame alf = new AdminLoginFrame(DATABASE);
-
-        java.awt.EventQueue.invokeLater(() -> {
-
-            alf.setVisible(true);
-        });
+//            new AdminLoginFrame(DATABASE).setVisible(true);
+                new HomeFrame(DATABASE).setVisible(true);
+            });
+        } catch (Exception e) {
+            
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 }

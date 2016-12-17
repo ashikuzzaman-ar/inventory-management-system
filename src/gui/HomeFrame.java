@@ -5,6 +5,7 @@
  */
 package gui;
 
+import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ public class HomeFrame extends javax.swing.JFrame {
     private final DefaultTableModel defaultTableModelMainBookList;
     private final DefaultTableModel defaultTableModelBookInfoTable;
     private final DefaultTableModel defaultTableModelBookBorrowerTable;
+    private PursueFrame pursueFrame;
 
     /**
      * Creates new form HomeFrame
@@ -510,7 +512,28 @@ public class HomeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_bAddBookActionPerformed
 
     private void bPursueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPursueActionPerformed
-        // TODO add your handling code here:
+
+        try {
+
+            int index = this.tblMainBookList.getSelectedRow();
+
+            if (index >= 0) {
+
+                java.awt.EventQueue.invokeLater(() -> {
+
+                    String ISBN = (String) this.defaultTableModelMainBookList.getValueAt(index, 2);
+                    pursueFrame = new PursueFrame(database, ISBN, this.titles,
+                            borrowers, borrowerISBNs, titleBorrowersMap);
+                    pursueFrame.setVisible(true);
+                });
+            } else {
+
+                JOptionPane.showMessageDialog(this, "Please select a book first then try again.");
+            }
+        } catch (HeadlessException e) {
+
+            JOptionPane.showMessageDialog(this, e);
+        }
     }//GEN-LAST:event_bPursueActionPerformed
 
     private void bSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSearchActionPerformed
